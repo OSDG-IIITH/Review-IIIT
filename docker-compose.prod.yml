@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build:
+      context: frontend
+      target: prod
+      args:
+        - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+    container_name: frontend
+    volumes:
+      - ./website:/usr/src/app/dist
+    depends_on:
+        - backend
+  backend:
+    build:
+      context: backend
