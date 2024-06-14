@@ -1,11 +1,10 @@
-import React from 'react';
-//import { useAuth } from '../context/AuthContext';
+// import { useAuth } from '../context/AuthContext';
 import { Container, Typography } from '@mui/material';
 
-const UserProfile = () => {
-//   const { currentUser } = useAuth();
+function UserProfile() {
+  //   const { currentUser } = useAuth();
 
-//   if (!currentUser) return <div>Loading...</div>;
+  //   if (!currentUser) return <div>Loading...</div>;
 
   return (
     <Container maxWidth="lg">
@@ -18,6 +17,6 @@ const UserProfile = () => {
       </Typography>
     </Container>
   );
-};
+}
 
 export default UserProfile;

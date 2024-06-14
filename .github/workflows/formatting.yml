@@ -1,0 +1,30 @@
+name: Auto Formatting
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Prettier
+        run: |
+          npm install --global prettier
+
+      - name: Format with Prettier
+        run: prettier --write "**/*.{js,jsx,md,mdx,css,yaml}"
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Apply Prettier Formatting Fixes

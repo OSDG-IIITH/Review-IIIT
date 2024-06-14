@@ -1,6 +1,5 @@
 [
-    { "id": "course1", "name": "Course 1" },
-    { "id": "course2", "name": "Course 2" },
-    { "id": "course3", "name": "Course 3" }
-  ]
-  
+  { "id": "course1", "name": "Course 1" },
+  { "id": "course2", "name": "Course 2" },
+  { "id": "course3", "name": "Course 3" }
+]
