@@ -1,1 +1,1 @@
-docker compose -p dev up --build
+docker compose -p dev up --build -d
