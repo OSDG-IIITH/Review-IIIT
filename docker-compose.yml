@@ -1,0 +1,39 @@
+services:
+  frontend:
+    build:
+      context: frontend
+      target: dev
+      #args:
+        #- VITE_BACKEND_URL=${VITE_BACKEND_URL}
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build: backend
+    depends_on:
+        - mongodb
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./.env.example
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    env_file:
+      - ./.env.example
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

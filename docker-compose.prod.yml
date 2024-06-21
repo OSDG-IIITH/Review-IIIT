@@ -1,0 +1,35 @@
+services:
+  frontend:
+    build:
+      context: frontend
+      target: prod
+      args:
+        - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+    env_file:
+      - ./.env
+    volumes:
+      - ./website:/app/dist
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build: backend
+    depends_on:
+        - mongodb
+    env_file:
+      - ./.env
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    env_file:
+      - ./.env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
