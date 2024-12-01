@@ -1,19 +1,21 @@
 """Initalizing fastapi"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-from routes.cas import router as auth_router
+from config import HOST_SUBPATH
+from routes.auth import router as auth_router
 from routes.courses import router as course_router
-from routes.reviews import router as review_router
-from routes.users import router as user_router
+from routes.members import router as members_router
 
-app = FastAPI(title="Review-IIIT Backend")
+app = FastAPI(title="Review-IIIT", root_path=HOST_SUBPATH)
 
-app.include_router(auth_router, tags=["Authentication"])
-app.include_router(user_router, prefix="/users", tags=["User Management"])
-app.include_router(course_router, prefix="/courses", tags=["Course Management"])
-app.include_router(review_router, prefix="/reviews", tags=["Review List"])
+app.include_router(auth_router, prefix="/api", tags=["Authentication"])
+app.include_router(course_router, prefix="/api/courses", tags=["Course Management"])
+app.include_router(members_router, prefix="/api/members", tags=["Member Management"])
 
+# fix CORS issues
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,8 +24,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Backend Index Page - For checking purposes
-@app.get("/", tags=["General"])
-async def index():
-    return {"message": "Backend Running!!"}
-
+# serve frontend
+app.mount("/", StaticFiles(directory="../frontend/dist", html=True))

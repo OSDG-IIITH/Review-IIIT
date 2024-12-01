@@ -1,3 +1,7 @@
 #!/bin/bash
 
-docker compose -p dev up --build -d
+if [[ $REVIEWIIITH_DIR == "" ]]; then
+    REVIEWIIITH_DIR=.
+fi
+
+docker-compose -f $REVIEWIIITH_DIR/docker-compose.yml -p reviewiiith up --build
