@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { Box } from "@mui/material";
+import { Box } from '@mui/material';
 
 import Home from './pages/Home';
 import CourseList from './pages/CourseList';
@@ -21,9 +21,9 @@ function App() {
       <Router basename={baseUrl}>
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh", // Make sure the entire page takes at least the full height
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh', // Make sure the entire page takes at least the full height
           }}
         >
           <Navbar />

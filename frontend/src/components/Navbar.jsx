@@ -8,9 +8,15 @@ function Navbar() {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           ReviewIIITH
         </Typography>
-        <Button color="inherit" component={Link} to="/">Home</Button>
-        <Button color="inherit" component={Link} to="/courses">Courses</Button>
-        <Button color="inherit" component={Link} to="/profs">Professors</Button>
+        <Button color="inherit" component={Link} to="/">
+          Home
+        </Button>
+        <Button color="inherit" component={Link} to="/courses">
+          Courses
+        </Button>
+        <Button color="inherit" component={Link} to="/profs">
+          Professors
+        </Button>
       </Toolbar>
     </AppBar>
   );
