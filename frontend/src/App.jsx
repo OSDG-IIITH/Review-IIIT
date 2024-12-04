@@ -19,7 +19,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const basePath = window.location.pathname.split('/')[1] || '';  // Get first segment of the URL
+  const basePath = window.location.pathname.split('/')[1] || ''; // Get first segment of the URL
   const baseUrl = `/${basePath}`;
   return (
     <ThemeProvider theme={theme}>
