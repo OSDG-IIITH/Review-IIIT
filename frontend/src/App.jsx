@@ -19,10 +19,12 @@ const theme = createTheme({
 });
 
 function App() {
+  const basePath = window.location.pathname.split('/')[1] || '';  // Get first segment of the URL
+  const baseUrl = `/${basePath}`;
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
+      <Router basename={baseUrl}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

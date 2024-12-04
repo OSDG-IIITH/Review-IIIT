@@ -14,6 +14,8 @@ RUN pip install -r requirements.txt
 
 # build with npm
 FROM node:20-slim AS node_builder
+ARG HOST_SUBPATH
+ENV VITE_BASE ${HOST_SUBPATH}/
 WORKDIR /frontend
 COPY --from=node_cache /cache/ .
 COPY frontend .

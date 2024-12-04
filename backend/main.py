@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from config import HOST_SUBPATH
@@ -24,5 +25,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+FRONTEND_PATH = "../frontend/dist"
+
+
+@app.exception_handler(404)
+async def exception_404_handler(_, __):
+    return FileResponse(f"{FRONTEND_PATH}/index.html")
+
+
 # serve frontend
-app.mount("/", StaticFiles(directory="../frontend/dist", html=True))
+app.mount("/", StaticFiles(directory=FRONTEND_PATH, html=True), "frontend")
