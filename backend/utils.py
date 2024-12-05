@@ -27,6 +27,7 @@ def set_auth_id(response: RedirectResponse, uid: str | None):
         response.set_cookie(
             "Authorization",
             jwt.encode({"_id": uid}, BACKEND_JWT_SECRET, algorithm="HS256"),
+            httponly=True,
             max_age=864000,  # 10 days
         )
     else:

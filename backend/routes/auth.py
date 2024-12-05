@@ -59,6 +59,16 @@ async def login(request: Request):
     return response
 
 
+@router.get("/has_login")
+async def has_login(request: Request):
+    """
+    Returns a boolean that indicates whether the current user is logged in or not.
+    This is needed because we are using http_only cookies so the client side cannot
+    actually read the cookie.
+    """
+    return has_auth_id(request)
+
+
 @router.get("/logout")
 async def logout():
     """

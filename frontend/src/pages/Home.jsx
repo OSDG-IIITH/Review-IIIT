@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Grid, Box, Container } from '@mui/material';
-import Button from '@mui/material/Button';
+import LoginButton from '../components/Login';
 
 function Home() {
   return (
@@ -71,16 +71,7 @@ function Home() {
           </Grid>
         </Grid>
       </Box>
-      <Box textAlign="center">
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{ marginTop: 2 }}
-          size="large"
-        >
-          Login
-        </Button>
-      </Box>
+      <LoginButton />
     </Container>
   );
 }
