@@ -84,10 +84,7 @@ async def student_post(user: Student):
     be exposed directly as public API, as it does an unauthenticated update.
     """
     if await prof_exists(user.email):
-        raise HTTPException(
-            status_code=403,
-            detail="Authentication error",
-        )
+        raise ValueError("invalid user for student_post")
 
     member_dict: dict = await students_collection.find_one({"email": user.email})
     if member_dict:

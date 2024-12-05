@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Grid, Box, Container } from '@mui/material';
 import LoginButton from '../components/Login';
 
-function Home() {
+const Home = ({ isLoggedIn }) => {
   return (
     <Container sx={{ mt: 6, mb: 6, color: 'text.primary' }}>
       <Typography variant="h3" gutterBottom align="center" color="primary">
@@ -71,9 +71,9 @@ function Home() {
           </Grid>
         </Grid>
       </Box>
-      <LoginButton />
+      <LoginButton isLoggedIn={isLoggedIn} />
     </Container>
   );
-}
+};
 
 export default Home;

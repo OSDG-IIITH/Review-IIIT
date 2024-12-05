@@ -51,10 +51,12 @@ async def login(request: Request):
         student_uid = await student_post(student)
     except Exception as e:
         logger.error(f"Could not authenticate: {e}")
-        return HTTPException(403, "Could not authenticate")
+        student_uid = None
 
     # send JWT as cookie
-    response = RedirectResponse(HOST_BASE_URL)
+    response = RedirectResponse(
+        HOST_BASE_URL if student_uid else cas_client.get_logout_url()
+    )
     set_auth_id(response, student_uid)
     return response
 

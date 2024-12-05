@@ -1,32 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Button, CircularProgress, Box } from '@mui/material';
-import { api, prefix_api } from '../api';
+import { Button, Box, Tooltip } from '@mui/material';
+import { do_login, do_logout } from '../api';
 
-const LoginButton = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get('/has_login');
-        setIsLoggedIn(response.data);
-      } catch (err) {
-        setError(err.message || 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkLoginStatus();
-  }, []);
-
-  const handleAuthAction = async () => {
-    window.location.href = prefix_api(isLoggedIn ? '/logout' : '/login');
-  };
-
+const LoginButton = ({ isLoggedIn }) => {
   // UI rendering
   return (
     <Box
@@ -37,20 +12,16 @@ const LoginButton = () => {
         gap: 2,
       }}
     >
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleAuthAction}
-        disabled={loading || isLoggedIn === null}
-        sx={{ marginTop: 2, minWidth: 150, size: 'large' }}
-      >
-        {loading ? (
-          <CircularProgress size={24} sx={{ color: 'white' }} />
-        ) : (
-          isLoggedIn !== null && (isLoggedIn ? 'Logout' : 'Login')
-        )}
-      </Button>
+      <Tooltip title={isLoggedIn ? "Logout with CAS" : "Login with CAS"}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={isLoggedIn ? do_logout : do_login}
+          sx={{ marginTop: 2, minWidth: 150, size: 'large' }}
+        >
+          {isLoggedIn ? 'Logout' : 'Login'}
+        </Button>
+      </Tooltip >
     </Box>
   );
 };

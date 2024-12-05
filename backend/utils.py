@@ -2,7 +2,7 @@ from fastapi import HTTPException, Request
 from fastapi.responses import RedirectResponse
 import jwt
 
-from config import logger, BACKEND_JWT_SECRET
+from config import BACKEND_JWT_SECRET
 
 
 def get_auth_id(request: Request) -> str:
@@ -11,7 +11,6 @@ def get_auth_id(request: Request) -> str:
             request.cookies["Authorization"], BACKEND_JWT_SECRET, algorithms=["HS256"]
         )["_id"]
     except (KeyError, jwt.InvalidTokenError) as e:
-        logger.info(f"Failed to get auth id: {e}")
         raise HTTPException(401, "Caller not authenticated")
 
 

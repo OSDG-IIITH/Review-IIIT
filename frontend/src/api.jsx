@@ -12,4 +12,12 @@ function prefix_api(str) {
   return API_PREFIX + str;
 }
 
-export { api, prefix_api };
+function do_login() {
+  window.location.href = prefix_api('/login');
+}
+
+function do_logout() {
+  window.location.href = prefix_api('/logout');
+}
+
+export { api, do_login, do_logout };
