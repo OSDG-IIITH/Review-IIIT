@@ -12,7 +12,7 @@ const LoginButton = ({ isLoggedIn }) => {
         gap: 2,
       }}
     >
-      <Tooltip title={isLoggedIn ? "Logout with CAS" : "Login with CAS"}>
+      <Tooltip title={isLoggedIn ? 'Logout with CAS' : 'Login with CAS'}>
         <Button
           variant="contained"
           color="secondary"
@@ -21,7 +21,7 @@ const LoginButton = ({ isLoggedIn }) => {
         >
           {isLoggedIn ? 'Logout' : 'Login'}
         </Button>
-      </Tooltip >
+      </Tooltip>
     </Box>
   );
 };
