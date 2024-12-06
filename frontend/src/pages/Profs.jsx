@@ -80,7 +80,7 @@ const Profs = () => {
           renderInput={(params) => (
             <TextField {...params} label="Search (by name or email)" />
           )}
-          sx={{ borderRadius: 2, flexGrow: 1, minWidth: 300 }}
+          sx={{ borderRadius: 2, flexGrow: 1 }}
         />
         <Tooltip
           title={
