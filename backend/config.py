@@ -21,6 +21,7 @@ BACKEND_JWT_SECRET = os.environ.get("BACKEND_JWT_SECRET", "")
 if not BACKEND_JWT_SECRET:
     raise RuntimeError("Empty BACKEND_JWT_SECRET")
 
+MSG_MAX_LEN = int(os.environ["MSG_MAX_LEN"])
 
 mongo_client = AsyncIOMotorClient(
     f"{BACKEND_MONGO_URI}/{BACKEND_MONGO_DATABASE}?retryWrites=true&w=majority"

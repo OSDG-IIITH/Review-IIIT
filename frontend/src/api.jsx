@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_PREFIX = `${import.meta.env.VITE_BASE}api`;
+import { HOST_SUBPATH } from './constants';
+
+const API_PREFIX = `${HOST_SUBPATH}api`;
 
 const api = axios.create({
   baseURL: API_PREFIX,

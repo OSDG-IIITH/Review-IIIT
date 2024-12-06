@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 
+import { HOST_SUBPATH } from '../constants';
+
 const Footer = () => {
   return (
     <Box
@@ -13,11 +15,11 @@ const Footer = () => {
     >
       <Typography variant="body2">
         © 2024 OSDG. All rights reserved.{' '}
-        <Link href="/#privacy-policy" color="inherit">
+        <Link href={`${HOST_SUBPATH}#privacy-policy`} color="inherit">
           Privacy Policy
         </Link>{' '}
         |{' '}
-        <Link href="/#tos" color="inherit">
+        <Link href={`${HOST_SUBPATH}#tos`} color="inherit">
           Terms of Service
         </Link>{' '}
         |{' '}

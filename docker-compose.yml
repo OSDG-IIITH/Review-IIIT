@@ -13,6 +13,7 @@ services:
             dockerfile: Dockerfile
             args:
                 HOST_SUBPATH: ${HOST_SUBPATH}
+                MSG_MAX_LEN: ${MSG_MAX_LEN}
         networks:
             reviewiiith_network:
                 ipv4_address: ${HOST_PRIVATE}

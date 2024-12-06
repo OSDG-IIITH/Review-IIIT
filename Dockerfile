@@ -15,7 +15,9 @@ RUN pip install -r requirements.txt
 # build with npm
 FROM node:20-slim AS node_builder
 ARG HOST_SUBPATH
+ARG MSG_MAX_LEN
 ENV VITE_BASE ${HOST_SUBPATH}/
+ENV VITE_MSG_MAX_LEN ${MSG_MAX_LEN}
 WORKDIR /frontend
 COPY --from=node_cache /cache/ .
 COPY frontend .

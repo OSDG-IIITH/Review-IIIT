@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 from typing import Literal, TypeAlias
 
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field, model_validator
+
+from config import MSG_MAX_LEN
 
 # List of valid semesters. M for monsoon and S for spring. The number after it
 # represents the year
@@ -14,11 +16,20 @@ class Review(BaseModel):
     """
 
     rating: Literal[1, 2, 3, 4, 5]
-    content: str = Field(..., min_length=1)
-    dtime: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    content: str = Field(..., min_length=1, max_length=MSG_MAX_LEN)
+    dtime: AwareDatetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     # TODO: upvote/downvote system
     # upvoters: set[str]  # set of student emails
     # downvoters: set[str]  # set of student emails
+
+    # Model-level validator that runs before individual field validation
+    @model_validator(mode="before")
+    def convert_naive_to_aware(cls, values):
+        if "dtime" in values:
+            dtime = values["dtime"]
+            if dtime and dtime.tzinfo is None:  # Check if datetime is naive
+                values["dtime"] = dtime.replace(tzinfo=timezone.utc)  # Make it aware
+        return values
 
 
 class Member(BaseModel):
