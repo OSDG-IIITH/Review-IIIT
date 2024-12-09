@@ -1,13 +1,29 @@
 from datetime import datetime, timezone
-from typing import Literal, TypeAlias
+from typing import Annotated, Literal, TypeAlias
 
-from pydantic import AwareDatetime, BaseModel, Field, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    EmailStr,
+    Field,
+    StringConstraints,
+    model_validator,
+)
 
 from config import MSG_MAX_LEN
 
 # List of valid semesters. M for monsoon and S for spring. The number after it
 # represents the year
 Sem: TypeAlias = Literal["S25", "M24", "S24", "M23", "S23", "M22"]
+
+# str annotated with a regex to match valid course codes
+CourseCode: TypeAlias = Annotated[
+    str, StringConstraints(pattern=r"^(C[EGLS]|MA|OC|PD|SC|HS|EC|GS)\d\.\d{3}$")
+]
+
+# str annotated with a regex to match valid roll numbers
+# TODO: can make this regex more precise
+StudentRollno: TypeAlias = Annotated[str, StringConstraints(pattern=r"^\d{10}$")]
 
 
 class Review(BaseModel):
@@ -38,7 +54,7 @@ class Member(BaseModel):
     """
 
     name: str = Field(..., min_length=1)
-    email: str = Field(..., min_length=1)
+    email: EmailStr
 
 
 class Student(Member):
@@ -46,7 +62,7 @@ class Student(Member):
     Class for storing a student
     """
 
-    rollno: str = Field(..., min_length=1)
+    rollno: StudentRollno
 
 
 class Prof(Member):
@@ -61,7 +77,7 @@ class Course(BaseModel):
     The code-sem combination is the ID for every course.
     """
 
-    code: str = Field(..., min_length=1)
+    code: CourseCode
     sem: Sem
     name: str = Field(..., min_length=1)
-    profs: list[str]  # list of prof emails
+    profs: list[EmailStr]  # list of prof emails

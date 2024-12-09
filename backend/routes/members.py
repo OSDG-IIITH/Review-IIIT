@@ -1,5 +1,6 @@
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import EmailStr
 
 from config import db
 from utils import get_auth_id
@@ -25,7 +26,7 @@ async def prof_list():
 
 
 @router.get("/exists/{email}")
-async def prof_exists(email: str):
+async def prof_exists(email: EmailStr):
     """
     Simple helper that checks whether a Prof record already exists, given the
     email
@@ -50,7 +51,7 @@ async def prof_post(profs: list[Prof]):
 
 
 @router.get("/reviews/{email}")
-async def prof_reviews_get(email: str):
+async def prof_reviews_get(email: EmailStr):
     """
     Helper to return all reviews under a given Prof email.
     This function returns None if the prof does not exist
@@ -66,7 +67,7 @@ async def prof_reviews_get(email: str):
 
 @router.post("/reviews/{email}")
 async def prof_reviews_post(
-    email: str, review: Review, auth_id: str = Depends(get_auth_id)
+    email: EmailStr, review: Review, auth_id: str = Depends(get_auth_id)
 ):
     """
     Helper to post a single review on a Prof.

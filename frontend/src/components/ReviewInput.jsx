@@ -25,7 +25,7 @@ const ReviewInput = ({ endpoint, onUpdate }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-    if (rating === 0 || message.trim() === '') {
+    if (!rating || message.trim() === '') {
       return;
     }
 
@@ -85,7 +85,7 @@ const ReviewInput = ({ endpoint, onUpdate }) => {
         />
         <Tooltip
           title={
-            rating === 0 || message.trim() === ''
+            !rating || message.trim() === ''
               ? 'Add rating and/or content to be able to submit'
               : 'Submit review'
           }
@@ -96,7 +96,7 @@ const ReviewInput = ({ endpoint, onUpdate }) => {
               variant="contained"
               color="primary"
               fullWidth
-              disabled={isSubmitting || rating === 0 || message.trim() === ''}
+              disabled={isSubmitting || !rating || message.trim() === ''}
             >
               {isSubmitting ? 'Submitting...' : 'Submit Review'}
             </Button>

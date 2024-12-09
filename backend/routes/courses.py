@@ -1,10 +1,11 @@
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import EmailStr
 
 from routes.members import prof_exists
 from config import db
 from utils import get_auth_id
-from models import Course, Review, Sem
+from models import Course, Review, Sem, CourseCode
 
 router = APIRouter(dependencies=[Depends(get_auth_id)])
 course_collection = db["courses"]
@@ -13,8 +14,8 @@ course_collection = db["courses"]
 @router.get("/")
 async def course_list(
     course_sem_filter: Sem | None = None,
-    course_code_filter: str | None = None,
-    prof_filter: str | None = None,
+    course_code_filter: CourseCode | None = None,
+    prof_filter: EmailStr | None = None,
 ):
     """
     List all courses. Can optionally pass filters for:
@@ -39,7 +40,7 @@ async def course_list(
 
 
 @router.get("/exists/{sem}/{code}")
-async def course_exists(sem: Sem, code: str):
+async def course_exists(sem: Sem, code: CourseCode):
     """
     Simple helper that checks whether a Course record already exists, given cid
     """
@@ -69,7 +70,7 @@ async def course_post(courses: list[Course]):
 
 
 @router.get("/reviews/{sem}/{course}")
-async def course_reviews_get(sem: Sem, code: str):
+async def course_reviews_get(sem: Sem, code: CourseCode):
     """
     Helper to return all reviews under a given course.
     This function returns None if the course does not exist
@@ -87,7 +88,7 @@ async def course_reviews_get(sem: Sem, code: str):
 
 @router.post("/reviews/{sem}/{course}")
 async def course_reviews_post(
-    sem: Sem, code: str, review: Review, auth_id: str = Depends(get_auth_id)
+    sem: Sem, code: CourseCode, review: Review, auth_id: str = Depends(get_auth_id)
 ):
     """
     Helper to post a single review on a Course.

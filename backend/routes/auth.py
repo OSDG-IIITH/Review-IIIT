@@ -1,7 +1,7 @@
 """FastAPI implementation of CASAuthentication"""
 
 import cas
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
 from routes.members import student_post
