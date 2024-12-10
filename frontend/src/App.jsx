@@ -8,7 +8,7 @@ import {
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 
 import Home from './pages/Home';
-import CourseList from './pages/CourseList';
+import Courses from './pages/Courses';
 import Profs from './pages/Profs';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -65,7 +65,7 @@ function App() {
               <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
               {isLoggedIn && (
                 <>
-                  <Route path="/courses" element={<CourseList />} />
+                  <Route path="/courses" element={<Courses />} />
                   <Route path="/profs" element={<Profs />} />
                 </>
               )}

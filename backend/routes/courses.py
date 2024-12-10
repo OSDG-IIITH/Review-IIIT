@@ -69,7 +69,7 @@ async def course_post(courses: list[Course]):
         await course_collection.insert_one(course.model_dump())
 
 
-@router.get("/reviews/{sem}/{course}")
+@router.get("/reviews/{sem}/{code}")
 async def course_reviews_get(sem: Sem, code: CourseCode):
     """
     Helper to return all reviews under a given course.
@@ -86,7 +86,7 @@ async def course_reviews_get(sem: Sem, code: CourseCode):
     ]
 
 
-@router.post("/reviews/{sem}/{course}")
+@router.post("/reviews/{sem}/{code}")
 async def course_reviews_post(
     sem: Sem, code: CourseCode, review: Review, auth_id: str = Depends(get_auth_id)
 ):
