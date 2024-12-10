@@ -4,6 +4,7 @@ import os
 from motor.motor_asyncio import AsyncIOMotorClient
 
 HOST_PROTOCOL = os.environ["HOST_PROTOCOL"]
+HOST_SECURE = HOST_PROTOCOL == "https"
 HOST_PRIVATE = os.environ["HOST_PRIVATE"]
 HOST_PUBLIC = os.environ["HOST_PUBLIC"] if os.getenv("HOST_PUBLIC") else HOST_PRIVATE
 HOST_SUBPATH = os.environ.get("HOST_SUBPATH", "")
@@ -20,6 +21,10 @@ BACKEND_CAS_SERVER_URL = os.environ["BACKEND_CAS_SERVER_URL"]
 BACKEND_JWT_SECRET = os.environ.get("BACKEND_JWT_SECRET", "")
 if not BACKEND_JWT_SECRET:
     raise RuntimeError("Empty BACKEND_JWT_SECRET")
+
+BACKEND_ADMIN_UIDS = {
+    i for i in os.environ.get("BACKEND_ADMIN_UIDS", "").split(",") if i
+}
 
 MSG_MAX_LEN = int(os.environ["MSG_MAX_LEN"])
 

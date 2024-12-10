@@ -4,7 +4,7 @@ from pydantic import EmailStr
 
 from routes.members import prof_exists
 from config import db
-from utils import get_auth_id
+from utils import get_auth_id, get_auth_id_admin
 from models import Course, Review, Sem, CourseCode
 
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -48,7 +48,7 @@ async def course_exists(sem: Sem, code: CourseCode):
     return record is not None
 
 
-@router.post("/")
+@router.post("/", dependencies=[Depends(get_auth_id_admin)])
 async def course_post(courses: list[Course]):
     """
     Post a list of courses.

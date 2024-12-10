@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 
 from config import db
-from utils import get_auth_id
+from utils import get_auth_id, get_auth_id_admin
 from models import Prof, Review, Student
 
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -35,7 +35,7 @@ async def prof_exists(email: EmailStr):
     return record is not None
 
 
-@router.post("/")
+@router.post("/", dependencies=[Depends(get_auth_id_admin)])
 async def prof_post(profs: list[Prof]):
     """
     Helper method to update a list of Profs in the records

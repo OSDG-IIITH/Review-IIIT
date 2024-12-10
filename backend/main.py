@@ -16,15 +16,6 @@ app.include_router(auth_router, prefix="/api", tags=["Authentication"])
 app.include_router(course_router, prefix="/api/courses", tags=["Course Management"])
 app.include_router(members_router, prefix="/api/members", tags=["Member Management"])
 
-# fix CORS issues
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 FRONTEND_PATH = "../frontend/dist"
 
 
