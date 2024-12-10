@@ -30,7 +30,9 @@ const Courses = () => {
         response.data.reverse();
         setCourseList(response.data);
         const response2 = await api.get('/members/');
-        setProfList(response2.data.sort((a, b) => a.name.localeCompare(b.name)));
+        setProfList(
+          response2.data.sort((a, b) => a.name.localeCompare(b.name))
+        );
       } catch (error) {
         // TODO: report error in frontend
         console.error('Error fetching data:', error);
@@ -63,7 +65,9 @@ const Courses = () => {
     return <FullPageLoader />;
   }
 
-  const semOptions = Array.from(new Set(courseList.map((course) => course.sem)));
+  const semOptions = Array.from(
+    new Set(courseList.map((course) => course.sem))
+  );
   const seen = new Set();
   const codeOptions = courseList
     .filter((course) => {
@@ -75,7 +79,7 @@ const Courses = () => {
       return true;
     })
     .map((course) => ({ code: course.code, name: course.name }))
-    .sort((a, b) => a.name.localeCompare(b.name));;
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <Container sx={{ mt: 3, mb: 3, color: 'text.primary' }}>
@@ -91,7 +95,7 @@ const Courses = () => {
           autoHighlight={true}
           onChange={(event, newValue) => setSemFilter(newValue)}
           renderInput={(params) => <TextField {...params} label="Semester" />}
-          sx={{ minWidth: 120 }}  // this magic number is based on length of label
+          sx={{ minWidth: 120 }} // this magic number is based on length of label
           size="small"
         />
         <Autocomplete
@@ -100,9 +104,9 @@ const Courses = () => {
           autoHighlight={true}
           getOptionLabel={(option) => `[${option.code}] ${option.name}`}
           onChange={(event, newValue) => setCodeFilter(newValue)}
-          renderInput={
-            (params) => <TextField {...params} label="Course (name or code)" />
-          }
+          renderInput={(params) => (
+            <TextField {...params} label="Course (name or code)" />
+          )}
           sx={{ flexGrow: 1 }}
           size="small"
         />
@@ -164,12 +168,14 @@ const Courses = () => {
           </Typography>
         ) : (
           filteredCourses.map((course, index) => (
-            <ReviewBox endpoint={`/courses/reviews/${course.sem}/${course.code}`}>
+            <ReviewBox
+              endpoint={`/courses/reviews/${course.sem}/${course.code}`}
+            >
               <Typography variant="h5" gutterBottom color="primary">
                 [{course.code}] {course.name} ({course.sem})
               </Typography>
-              {course.profs.map(email => {
-                const prof = profList.find(p => p.email === email);
+              {course.profs.map((email) => {
+                const prof = profList.find((p) => p.email === email);
                 return prof ? (
                   <Typography variant="body1" color="text.primary" key={email}>
                     {prof.name} &lt;{email}&gt;

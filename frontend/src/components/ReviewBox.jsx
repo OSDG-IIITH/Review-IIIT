@@ -71,15 +71,15 @@ const ReviewBox = ({ children, endpoint }) => {
         {reviewsList === null ? (
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "150px",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '150px',
             }}
           >
             <CircularProgress />
           </Box>
-        ) : (!reviewsList || reviewsList.length === 0) ? (
+        ) : !reviewsList || reviewsList.length === 0 ? (
           <Typography variant="body1" color="text.secondary">
             No reviews available.
           </Typography>

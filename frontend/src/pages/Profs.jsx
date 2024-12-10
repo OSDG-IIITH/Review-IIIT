@@ -60,7 +60,7 @@ const Profs = () => {
         />
         <Tooltip
           title={
-            (selectedProf === null || selectedProf == reviewProf)
+            selectedProf === null || selectedProf == reviewProf
               ? 'Select a new professor first'
               : 'Display reviews'
           }
