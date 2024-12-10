@@ -57,7 +57,7 @@ const ReviewInput = ({ endpoint, onUpdate }) => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom color="primary">
+      <Typography variant="h6" gutterBottom color="secondary" sx={{ mt: 1 }}>
         Submit a Review
       </Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 2 }}>

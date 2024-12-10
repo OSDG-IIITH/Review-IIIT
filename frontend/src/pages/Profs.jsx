@@ -6,23 +6,19 @@ import {
   Box,
   Container,
   Typography,
-  Card,
-  CardContent,
   Tooltip,
 } from '@mui/material';
 
 import FullPageLoader from '../components/FullPageLoader';
-import ReviewInput from '../components/ReviewInput';
-import ReviewList from '../components/ReviewList';
+
+import ReviewBox from '../components/ReviewBox';
 
 import { api } from '../api';
-import theme from '../theme';
 
 const Profs = () => {
   const [profList, setProfList] = useState(null);
   const [selectedProf, setSelectedProf] = useState(null);
   const [reviewProf, setReviewProf] = useState(null);
-  const [reviewsList, setReviewsList] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -38,33 +34,12 @@ const Profs = () => {
     fetchOptions();
   }, []);
 
-  const handleSearch = async () => {
-    let chosenProf = selectedProf || reviewProf;
-    if (!chosenProf || !chosenProf.email) {
-      return;
-    }
-
-    setReviewsList(null); // loading
-    try {
-      const response = await api.get(`/members/reviews/${chosenProf.email}`);
-      setReviewsList(response.data);
-    } catch (error) {
-      // TODO: report error in frontend
-      console.error('Error during search:', error);
-      setReviewsList([]);
-    }
-    if (selectedProf) {
-      setReviewProf(selectedProf);
-      setSelectedProf(null);
-    }
-  };
-
-  if (profList === null || reviewsList === null) {
+  if (profList === null) {
     return <FullPageLoader />;
   }
 
   return (
-    <Container sx={{ mt: 6, mb: 6, color: 'text.primary' }}>
+    <Container sx={{ mt: 3, mb: 3, color: 'text.primary' }}>
       <Box
         display="flex"
         alignItems="center"
@@ -81,21 +56,22 @@ const Profs = () => {
             <TextField {...params} label="Search (by name or email)" />
           )}
           sx={{ borderRadius: 2, flexGrow: 1 }}
+          size="small"
         />
         <Tooltip
           title={
-            selectedProf !== null
-              ? 'Display reviews'
-              : 'Select a professor first'
+            (selectedProf === null || selectedProf == reviewProf)
+              ? 'Select a new professor first'
+              : 'Display reviews'
           }
         >
           <span>
             <Button
               variant="contained"
               color="primary"
-              onClick={handleSearch}
-              disabled={selectedProf === null}
-              size="large"
+              onClick={() => setReviewProf(selectedProf)}
+              disabled={selectedProf === null || selectedProf == reviewProf}
+              size="small"
             >
               Search
             </Button>
@@ -103,40 +79,18 @@ const Profs = () => {
         </Tooltip>
       </Box>
       {reviewProf ? (
-        <>
-          <Card
-            sx={{
-              width: '100%',
-              backgroundColor: theme.palette.background.paper,
-              borderRadius: 2,
-              boxShadow: 1,
-            }}
-          >
-            <CardContent>
-              <Typography variant="h5" color="primary">
-                Showing reviews for
-              </Typography>
-              <Typography variant="body1" color="text.primary">
-                <strong>Name:</strong> {reviewProf.name}
-              </Typography>
-              <Typography variant="body1" color="text.primary">
-                <strong>Email:</strong> {reviewProf.email}
-              </Typography>
-              <ReviewInput
-                endpoint={`/members/reviews/${reviewProf.email}`}
-                onUpdate={handleSearch}
-              />
-            </CardContent>
-          </Card>
-          <ReviewList reviews={reviewsList} />
-        </>
+        <ReviewBox endpoint={`/members/reviews/${reviewProf.email}`}>
+          <Typography variant="h5" gutterBottom color="primary">
+            {reviewProf.name} &lt;{reviewProf.email}&gt;
+          </Typography>
+        </ReviewBox>
       ) : (
         <Typography
           variant="body2"
           color="text.primary"
           sx={{ fontStyle: 'italic' }}
         >
-          Please enter an option in the dropdown and then hit search.
+          Please pick a professor from the dropdown and then hit search.
         </Typography>
       )}
     </Container>
