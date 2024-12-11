@@ -8,7 +8,7 @@ from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET, HOST_SECURE
 def get_auth_id(request: Request) -> str:
     try:
         return jwt.decode(
-            request.cookies["Authorization"], BACKEND_JWT_SECRET, algorithms=["HS256"]
+            request.cookies["auth_hash"], BACKEND_JWT_SECRET, algorithms=["HS256"]
         )["_id"]
     except (KeyError, jwt.InvalidTokenError):
         raise HTTPException(401, "Caller not authenticated")
@@ -32,7 +32,7 @@ def has_auth_id(request: Request) -> bool:
 def set_auth_id(response: RedirectResponse, uid: str | None):
     if uid is not None:
         response.set_cookie(
-            "Authorization",
+            "auth_hash",
             jwt.encode({"_id": uid}, BACKEND_JWT_SECRET, algorithm="HS256"),
             httponly=True,
             secure=HOST_SECURE,
@@ -41,7 +41,7 @@ def set_auth_id(response: RedirectResponse, uid: str | None):
         )
     else:
         response.delete_cookie(
-            "Authorization",
+            "auth_hash",
             httponly=True,
             secure=HOST_SECURE,
             samesite="strict",

@@ -1,3 +1,5 @@
+import base64
+import hashlib
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
@@ -8,7 +10,6 @@ from models import Prof, Review, Student
 
 router = APIRouter(dependencies=[Depends(get_auth_id)])
 profs_collection = db["profs"]
-students_collection = db["students"]
 
 
 @router.get("/")
@@ -79,16 +80,15 @@ async def prof_reviews_post(
     )
 
 
-async def student_post(user: Student):
+async def student_hash(user: Student):
     """
-    Internal function to post a Student to the database. This function must not
-    be exposed directly as public API, as it does an unauthenticated update.
+    Internal function to hash a Student object. This hash is used as a review key
+    to ensure that a user cannot repost reviews.
     """
     if await prof_exists(user.email):
         raise ValueError("invalid user for student_post")
 
-    member_dict: dict = await students_collection.find_one({"email": user.email})
-    if member_dict:
-        return str(member_dict["_id"])
-
-    return str((await students_collection.insert_one(user.model_dump())).inserted_id)
+    # first generate a sha512 hash of user data and then base64 encode it
+    return base64.b64encode(
+        hashlib.sha512(f"{user.name}-{user.email}-{user.rollno}".encode()).digest()
+    ).decode()

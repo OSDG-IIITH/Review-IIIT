@@ -4,7 +4,7 @@ import cas
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
-from routes.members import student_post
+from routes.members import student_hash
 from utils import has_auth_id, set_auth_id
 from models import Student
 
@@ -42,13 +42,14 @@ async def login(request: Request):
         if not attributes:
             raise ValueError("CAS attributes not valid")
 
+        # this validates name, email and rollno (which is important to validate)
         student = Student(
             name=attributes.get("Name", ""),
             email=attributes.get("E-Mail", user),
             rollno=attributes.get("RollNo", ""),
         )
 
-        student_uid = await student_post(student)
+        student_uid = await student_hash(student)
     except Exception as e:
         logger.error(f"Could not authenticate: {e}")
         student_uid = None
