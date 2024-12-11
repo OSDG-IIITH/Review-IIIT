@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Autocomplete,
@@ -13,34 +13,11 @@ import FullPageLoader from '../components/FullPageLoader';
 
 import ReviewBox from '../components/ReviewBox';
 
-import { api } from '../api';
-
-const Courses = () => {
-  const [courseList, setCourseList] = useState(null);
-  const [profList, setProfList] = useState(null);
+const Courses = ({ courseList, profList }) => {
   const [semFilter, setSemFilter] = useState(null);
   const [codeFilter, setCodeFilter] = useState(null);
   const [profFilter, setProfFilter] = useState(null);
   const [filteredCourses, setFilteredCourses] = useState(null);
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const response = await api.get('/courses/');
-        response.data.reverse();
-        setCourseList(response.data);
-        const response2 = await api.get('/members/');
-        setProfList(
-          response2.data.sort((a, b) => a.name.localeCompare(b.name))
-        );
-      } catch (error) {
-        // TODO: report error in frontend
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchOptions();
-  }, []);
 
   const applyFilters = () => {
     if (!semFilter && !codeFilter && !profFilter) {

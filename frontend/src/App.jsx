@@ -30,18 +30,30 @@ function App() {
   }
 
   const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [courseList, setCourseList] = useState(null);
+  const [profList, setProfList] = useState(null);
   useEffect(() => {
-    const checkLoginStatus = async () => {
+    const checkLoginAndFetchLists = async () => {
       try {
-        const response = await api.get('/has_login');
-        setIsLoggedIn(response.data);
+        const response_login = await api.get('/has_login');
+        setIsLoggedIn(response_login.data);
+        if (response_login.data) {
+          const response_members = await api.get('/members/');
+          setProfList(
+            response_members.data.sort((a, b) => a.name.localeCompare(b.name))
+          );
+
+          const response_courses = await api.get('/courses/');
+          response_courses.data.reverse();
+          setCourseList(response_courses.data);
+        }
       } catch (err) {
         // TODO: display error in some popup
         setIsLoggedIn(false);
       }
     };
 
-    checkLoginStatus();
+    checkLoginAndFetchLists();
   }, []);
 
   if (isLoggedIn === null) {
@@ -65,8 +77,16 @@ function App() {
               <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
               {isLoggedIn && (
                 <>
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/profs" element={<Profs />} />
+                  <Route
+                    path="/courses"
+                    element={
+                      <Courses courseList={courseList} profList={profList} />
+                    }
+                  />
+                  <Route
+                    path="/profs"
+                    element={<Profs profList={profList} />}
+                  />
                 </>
               )}
               <Route path="*" element={<Navigate to="/" />} />

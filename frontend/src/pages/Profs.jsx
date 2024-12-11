@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Autocomplete,
@@ -13,26 +13,9 @@ import FullPageLoader from '../components/FullPageLoader';
 
 import ReviewBox from '../components/ReviewBox';
 
-import { api } from '../api';
-
-const Profs = () => {
-  const [profList, setProfList] = useState(null);
+const Profs = ({ profList }) => {
   const [selectedProf, setSelectedProf] = useState(null);
   const [reviewProf, setReviewProf] = useState(null);
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const response = await api.get('/members/');
-        setProfList(response.data.sort((a, b) => a.name.localeCompare(b.name)));
-      } catch (error) {
-        // TODO: report error in frontend
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchOptions();
-  }, []);
 
   if (profList === null) {
     return <FullPageLoader />;
