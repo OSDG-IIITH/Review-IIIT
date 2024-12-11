@@ -8,7 +8,7 @@ const Home = ({ isLoggedIn }) => {
       <Typography variant="h3" gutterBottom align="center" color="primary">
         Welcome to ReviewIIITH
       </Typography>
-      <Typography variant="h6" gutterBottom align="center">
+      <Typography variant="h6" gutterBottom align="center" sx={{ mb: 4 }}>
         A reviews portal by students, for students
       </Typography>
       <Typography variant="h6" align="center" paragraph color="text.secondary">
@@ -31,16 +31,19 @@ const Home = ({ isLoggedIn }) => {
       <Box sx={{ my: 6 }}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6} name="privacy-policy">
-            <Typography variant="h4" gutterBottom color="secondary">
+            <Typography variant="h4" color="secondary" sx={{ mb: 4 }}>
               Privacy Policy
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" gutterBottom>
               To ensure that this platform is only accessible to students of
               IIIT, the portal is guarded behind the CAS login. As a result of
               using the CAS API; your name, email and roll number will be
-              visible to the backend code. This information will only be visible
-              to the admins of OSDG and will not be shared in any form or manner
-              with anyone else.
+              visible to the backend code.
+            </Typography>
+            <Typography variant="body1" color="text.secondary" gutterBottom>
+              This information is used by the backend to generate a hash value
+              that is associated with any reviews you make. By doing so, none
+              of your details become directly associated with your reviews.
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Your privacy is our priority. We ensure all reviews remain
@@ -49,15 +52,15 @@ const Home = ({ isLoggedIn }) => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={6} name="tos">
-            <Typography variant="h4" gutterBottom color="secondary">
+            <Typography variant="h4" gutterBottom color="secondary" sx={{ mb: 4 }}>
               Terms of Use
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" gutterBottom>
               By using this platform, you agree to share honest and constructive
-              feedback. We trust that the student community can use this
-              platform responsibly without abuse.
+              feedback. We trust the student community can use this site
+              responsibly without abuse.
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color="text.secondary" gutterBottom>
               All content posted on the reviews reflect the opinions of their
               original authors, and not of OSDG members or admins. In no event
               shall the authors or contributors be held liable for any claim,
