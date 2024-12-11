@@ -42,8 +42,8 @@ const Home = ({ isLoggedIn }) => {
             </Typography>
             <Typography variant="body1" color="text.secondary" gutterBottom>
               This information is used by the backend to generate a hash value
-              that is associated with any reviews you make. By doing so, none
-              of your details become directly associated with your reviews.
+              that is associated with any reviews you make. By doing so, none of
+              your details become directly associated with your reviews.
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Your privacy is our priority. We ensure all reviews remain
@@ -52,7 +52,12 @@ const Home = ({ isLoggedIn }) => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={6} name="tos">
-            <Typography variant="h4" gutterBottom color="secondary" sx={{ mb: 4 }}>
+            <Typography
+              variant="h4"
+              gutterBottom
+              color="secondary"
+              sx={{ mb: 4 }}
+            >
               Terms of Use
             </Typography>
             <Typography variant="body1" color="text.secondary" gutterBottom>
