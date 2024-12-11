@@ -56,7 +56,7 @@ function App() {
 
             // If the year is the same, compare by term (M before S)
             if (termA !== termB) {
-              return termA === "M" ? -1 : 1;
+              return termA === 'M' ? -1 : 1;
             }
 
             // If the semester is the same, compare by name (ascending order)
