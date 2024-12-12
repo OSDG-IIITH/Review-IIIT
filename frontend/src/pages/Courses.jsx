@@ -45,11 +45,12 @@ const Courses = ({ courseList, profMap }) => {
   const semOptions = Array.from(
     new Set(
       courseList
-        .filter(course =>
-          (!codeFilter || course.code === codeFilter.code) &&
-          (!profFilter || course.profs.includes(profFilter.email))
+        .filter(
+          (course) =>
+            (!codeFilter || course.code === codeFilter.code) &&
+            (!profFilter || course.profs.includes(profFilter.email))
         )
-        .map(course => course.sem)
+        .map((course) => course.sem)
     )
   );
 
@@ -75,14 +76,15 @@ const Courses = ({ courseList, profMap }) => {
   const profOptions = Array.from(
     new Set(
       courseList
-        .filter(course =>
-          (!codeFilter || course.code === codeFilter.code) &&
-          (!semFilter || course.sem === semFilter)
+        .filter(
+          (course) =>
+            (!codeFilter || course.code === codeFilter.code) &&
+            (!semFilter || course.sem === semFilter)
         )
-        .flatMap(course => course.profs)
+        .flatMap((course) => course.profs)
     )
   )
-    .map(email => profMap.get(email))
+    .map((email) => profMap.get(email))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (

@@ -71,8 +71,7 @@ function App() {
             return a.name.localeCompare(b.name);
           });
           setCourseList(response_courses.data);
-        }
-        else {
+        } else {
           logoutHandler();
         }
       } catch (err) {
@@ -88,7 +87,10 @@ function App() {
     return <FullPageLoader />;
   }
 
-  const profMap = profList === null ? null : new Map(profList.map(prof => [prof.email, prof]));
+  const profMap =
+    profList === null
+      ? null
+      : new Map(profList.map((prof) => [prof.email, prof]));
 
   return (
     <ThemeProvider theme={theme}>
