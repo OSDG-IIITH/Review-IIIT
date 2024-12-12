@@ -17,7 +17,7 @@ import FullPageLoader from './components/FullPageLoader';
 import './App.css'; // Import the global styles
 import theme from './theme';
 
-import { api } from './api';
+import { api, set_logout_callback } from './api';
 
 import { HOST_SUBPATH } from './constants';
 
@@ -32,7 +32,15 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [courseList, setCourseList] = useState(null);
   const [profList, setProfList] = useState(null);
+
+  const logoutHandler = () => {
+    setIsLoggedIn(false);
+    setProfList(null);
+    setCourseList(null);
+  };
+
   useEffect(() => {
+    set_logout_callback(logoutHandler);
     const checkLoginAndFetchLists = async () => {
       try {
         const response_login = await api.get('/has_login');
@@ -64,9 +72,12 @@ function App() {
           });
           setCourseList(response_courses.data);
         }
+        else {
+          logoutHandler();
+        }
       } catch (err) {
         // TODO: display error in some popup
-        setIsLoggedIn(false);
+        logoutHandler();
       }
     };
 
