@@ -43,7 +43,8 @@ const Home = ({ isLoggedIn }) => {
             <Typography variant="body1" color="text.secondary" gutterBottom>
               This information is used by the backend to generate a hash value
               that is associated with any reviews you make. By doing so, none of
-              your details become directly associated with your reviews.
+              your details become directly associated with your reviews, so that
+              your review stays anonymous even to the backend.
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Your privacy is our priority. We ensure all reviews remain

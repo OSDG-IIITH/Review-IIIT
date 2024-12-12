@@ -77,6 +77,8 @@ function App() {
     return <FullPageLoader />;
   }
 
+  const profMap = profList === null ? null : new Map(profList.map(prof => [prof.email, prof]));
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -97,7 +99,7 @@ function App() {
                   <Route
                     path="/courses"
                     element={
-                      <Courses courseList={courseList} profList={profList} />
+                      <Courses courseList={courseList} profMap={profMap} />
                     }
                   />
                   <Route

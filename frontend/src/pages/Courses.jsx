@@ -13,7 +13,7 @@ import FullPageLoader from '../components/FullPageLoader';
 
 import ReviewBox from '../components/ReviewBox';
 
-const Courses = ({ courseList, profList }) => {
+const Courses = ({ courseList, profMap }) => {
   const [semFilter, setSemFilter] = useState(null);
   const [codeFilter, setCodeFilter] = useState(null);
   const [profFilter, setProfFilter] = useState(null);
@@ -38,16 +38,30 @@ const Courses = ({ courseList, profList }) => {
     }
   };
 
-  if (courseList === null || profList === null) {
+  if (courseList === null || profMap === null) {
     return <FullPageLoader />;
   }
 
   const semOptions = Array.from(
-    new Set(courseList.map((course) => course.sem))
+    new Set(
+      courseList
+        .filter(course =>
+          (!codeFilter || course.code === codeFilter.code) &&
+          (!profFilter || course.profs.includes(profFilter.email))
+        )
+        .map(course => course.sem)
+    )
   );
+
   const seen = new Set();
   const codeOptions = courseList
     .filter((course) => {
+      if (semFilter && course.sem !== semFilter) {
+        return false;
+      }
+      if (profFilter && !course.profs.includes(profFilter.email)) {
+        return false;
+      }
       const identifier = `${course.code}-${course.name}`;
       if (seen.has(identifier)) {
         return false;
@@ -56,6 +70,19 @@ const Courses = ({ courseList, profList }) => {
       return true;
     })
     .map((course) => ({ code: course.code, name: course.name }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const profOptions = Array.from(
+    new Set(
+      courseList
+        .filter(course =>
+          (!codeFilter || course.code === codeFilter.code) &&
+          (!semFilter || course.sem === semFilter)
+        )
+        .flatMap(course => course.profs)
+    )
+  )
+    .map(email => profMap.get(email))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -96,7 +123,7 @@ const Courses = ({ courseList, profList }) => {
         size="small"
       >
         <Autocomplete
-          options={profList}
+          options={profOptions}
           autoComplete={true}
           autoHighlight={true}
           getOptionLabel={(option) => `${option.name} <${option.email}>`}
@@ -152,7 +179,7 @@ const Courses = ({ courseList, profList }) => {
                 [{course.code}] {course.name} ({course.sem})
               </Typography>
               {course.profs.map((email) => {
-                const prof = profList.find((p) => p.email === email);
+                const prof = profMap.get(email);
                 return prof ? (
                   <Typography variant="body1" color="text.primary" key={email}>
                     {prof.name} &lt;{email}&gt;
