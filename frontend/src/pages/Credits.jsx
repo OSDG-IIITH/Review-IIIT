@@ -1,5 +1,12 @@
 import React from 'react';
-import { Typography, Box, Container, List, ListItem, ListItemText } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 
 const Credits = () => {
   return (
@@ -13,9 +20,9 @@ const Credits = () => {
           Idea Contributors
         </Typography>
         <Typography paragraph color="text.secondary">
-          This project was inspired by some projects submitted during HackIIIT 2024. 
-          We would like to acknowledge the following teams whose projects have
-          inspired this portal:
+          This project was inspired by some projects submitted during HackIIIT
+          2024. We would like to acknowledge the following teams whose projects
+          have inspired this portal:
         </Typography>
         <List sx={{ pl: 4, color: 'text.secondary' }}>
           <ListItem>
@@ -38,7 +45,8 @@ const Credits = () => {
           Code Contributors
         </Typography>
         <Typography paragraph color="text.secondary">
-          The core implementation and development of this project were carried out by:
+          The core implementation and development of this project were carried
+          out by:
         </Typography>
         <List sx={{ pl: 4, color: 'text.secondary' }}>
           <ListItem>
@@ -52,7 +60,8 @@ const Credits = () => {
           </ListItem>
         </List>
         <Typography paragraph color="text.secondary">
-          We look forward to adding more contributors to this list as the project evolves!
+          We look forward to adding more contributors to this list as the
+          project evolves!
         </Typography>
       </Box>
 
@@ -61,12 +70,13 @@ const Credits = () => {
           Users and Beta Testers
         </Typography>
         <Typography paragraph color="text.secondary">
-          A big thank you to all our beta testers who provided invaluable feedback and bug reports. 
-          Your efforts have greatly improved the quality of this platform.
+          A big thank you to all our beta testers who provided invaluable
+          feedback and bug reports. Your efforts have greatly improved the
+          quality of this platform.
         </Typography>
         <Typography paragraph color="text.secondary">
-          Finally, to all our users: your feedback is what makes this platform better for everyone. 
-          Thank you for sharing your thoughts and reviews!
+          Finally, to all our users: your feedback is what makes this platform
+          better for everyone. Thank you for sharing your thoughts and reviews!
         </Typography>
       </Box>
     </Container>
