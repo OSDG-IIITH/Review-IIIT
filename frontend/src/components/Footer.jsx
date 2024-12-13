@@ -14,6 +14,10 @@ const Footer = () => {
     >
       <Typography variant="body2">
         © 2024 OSDG. All rights reserved.{' '}
+        <Link component={RouterLink} to="/credits" color="inherit">
+          Credits
+        </Link>{' '}
+        |{' '}
         <Link component={RouterLink} to="/#privacy-policy" color="inherit">
           Privacy Policy
         </Link>{' '}

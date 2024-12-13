@@ -9,6 +9,7 @@ import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 
 import Home from './pages/Home';
 import Courses from './pages/Courses';
+import Credits from './pages/Credits';
 import Profs from './pages/Profs';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -107,6 +108,7 @@ function App() {
           <Box sx={{ flexGrow: 1 }}>
             <Routes>
               <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+              <Route path="/credits" element={<Credits />} />
               {isLoggedIn && (
                 <>
                   <Route
