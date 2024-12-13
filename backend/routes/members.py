@@ -8,6 +8,7 @@ from config import db
 from utils import get_auth_id, get_auth_id_admin
 from models import Prof, Review, Student
 
+# The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
 profs_collection = db["profs"]
 
@@ -39,7 +40,8 @@ async def prof_exists(email: EmailStr):
 @router.post("/", dependencies=[Depends(get_auth_id_admin)])
 async def prof_post(profs: list[Prof]):
     """
-    Helper method to update a list of Profs in the records
+    Helper method to update a list of Profs in the records. This is an admin
+    endpoint and can't be used by regular users.
     """
     for prof in profs:
         if await prof_exists(prof.email):

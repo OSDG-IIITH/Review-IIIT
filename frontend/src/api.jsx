@@ -25,6 +25,9 @@ function do_login() {
 }
 
 function do_logout() {
+  // explicitly call the logout callback to update frontend state consistently.
+  // This fixes the bug where using the browser back button can leave frontend
+  // and backend out of sync on the logout status
   if (logoutCallback) {
     logoutCallback();
   }

@@ -6,6 +6,15 @@ from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET, HOST_SECURE
 
 
 def get_auth_id(request: Request) -> str:
+    """
+    Helper function to get auth id (hash) from the request cookie. We use jwt
+    to generated an encrypted and signed cookie, so at this stage we do the
+    decryption to extract the actual hash value.
+
+    This function raises a HTTPException if the caller is not correctly
+    authenticated, and this is important as it is used as a FastAPI dependency
+    that safeguards all API from unauthorized access.
+    """
     try:
         return jwt.decode(
             request.cookies["auth_hash"], BACKEND_JWT_SECRET, algorithms=["HS256"]
@@ -15,6 +24,10 @@ def get_auth_id(request: Request) -> str:
 
 
 def get_auth_id_admin(request: Request) -> str:
+    """
+    It does everything what get_auth_id does, but additionally checks if the
+    caller is backend admin. This is used as a dependency for admin API.
+    """
     ret = get_auth_id(request)
     if ret not in BACKEND_ADMIN_UIDS:
         raise HTTPException(403, "Caller is authenticated but not admin")
@@ -23,6 +36,10 @@ def get_auth_id_admin(request: Request) -> str:
 
 
 def has_auth_id(request: Request) -> bool:
+    """
+    This just returns a boolean on whether the caller is authenticated correctly
+    or not.
+    """
     try:
         return bool(get_auth_id(request))
     except HTTPException:
@@ -30,6 +47,11 @@ def has_auth_id(request: Request) -> bool:
 
 
 def set_auth_id(response: RedirectResponse, uid: str | None):
+    """
+    This function is used to set the auth id (hash). If the uid argument is
+    None, it deletes the auth cookie, otherwise it sets it to a jwt encoded
+    value that contains the hash.
+    """
     if uid is not None:
         response.set_cookie(
             "auth_hash",

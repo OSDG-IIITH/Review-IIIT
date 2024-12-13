@@ -49,6 +49,7 @@ async def login(request: Request):
             rollno=attributes.get("RollNo", ""),
         )
 
+        # generates the uid (hash) from student data
         student_uid = await student_hash(student)
     except Exception as e:
         logger.error(f"Could not authenticate: {e}")

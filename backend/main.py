@@ -20,6 +20,10 @@ FRONTEND_PATH = "../frontend/dist"
 
 @app.exception_handler(404)
 async def exception_404_handler(_, __):
+    """
+    A generic 404 error handler. Here we just let the frontend react router code
+    handle it, so redirect to it.
+    """
     return FileResponse(f"{FRONTEND_PATH}/index.html")
 
 

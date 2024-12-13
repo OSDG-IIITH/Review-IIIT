@@ -22,6 +22,7 @@ CourseCode: TypeAlias = Annotated[
 ]
 
 # str annotated with a regex to match valid roll numbers
+# currently, this matches any 10 digit positive integer
 # TODO: can make this regex more precise
 StudentRollno: TypeAlias = Annotated[str, StringConstraints(pattern=r"^\d{10}$")]
 

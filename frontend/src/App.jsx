@@ -48,6 +48,7 @@ function App() {
         setIsLoggedIn(response_login.data);
         if (response_login.data) {
           const response_members = await api.get('/members/');
+          // sort by ascending order of name
           setProfList(
             response_members.data.sort((a, b) => a.name.localeCompare(b.name))
           );
@@ -88,6 +89,7 @@ function App() {
     return <FullPageLoader />;
   }
 
+  // make a Map out of profList data for efficient name lookup from email
   const profMap =
     profList === null
       ? null
@@ -110,6 +112,7 @@ function App() {
               <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
               <Route path="/credits" element={<Credits />} />
               {isLoggedIn && (
+                // Ensure these frontend pages can only render on login status
                 <>
                   <Route
                     path="/courses"
@@ -123,6 +126,7 @@ function App() {
                   />
                 </>
               )}
+              {/* this is a catch all (kind of 404 handler) redirect to root */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </Box>

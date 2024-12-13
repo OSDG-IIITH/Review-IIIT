@@ -7,6 +7,7 @@ from config import db
 from utils import get_auth_id, get_auth_id_admin
 from models import Course, Review, Sem, CourseCode
 
+# The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
 course_collection = db["courses"]
 
@@ -18,7 +19,9 @@ async def course_list(
     prof_filter: EmailStr | None = None,
 ):
     """
-    List all courses. Can optionally pass filters for:
+    List all courses. 
+    This does not return the reviews attribute, that must be queried individually.
+    Can optionally pass filters for:
     - course semester
     - course code
     - prof
@@ -42,7 +45,7 @@ async def course_list(
 @router.get("/exists/{sem}/{code}")
 async def course_exists(sem: Sem, code: CourseCode):
     """
-    Simple helper that checks whether a Course record already exists, given cid
+    Simple helper that checks whether a Course record already exists, given sem+code
     """
     record = await course_collection.find_one({"sem": sem, "code": code}, ["_id"])
     return record is not None
@@ -51,7 +54,8 @@ async def course_exists(sem: Sem, code: CourseCode):
 @router.post("/", dependencies=[Depends(get_auth_id_admin)])
 async def course_post(courses: list[Course]):
     """
-    Post a list of courses.
+    Post a list of courses. This is an admin endpoint and can't be used by
+    regular users.
     """
     for course in courses:
         if await course_exists(course.sem, course.code):
