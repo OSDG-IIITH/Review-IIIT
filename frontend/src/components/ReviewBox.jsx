@@ -14,13 +14,12 @@ import {
   DialogTitle,
   Button,
 } from '@mui/material';
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import theme from '../theme';
 import ReviewInput from './ReviewInput';
 
 import { api } from '../api';
-
 
 const Review = ({ review, endpoint, onUpdate }) => {
   const theme = useTheme(); // Access the theme
@@ -36,7 +35,7 @@ const Review = ({ review, endpoint, onUpdate }) => {
       setOpenDialog(false); // Close dialog after deletion
     } catch (error) {
       // TODO: convey message to frontend
-      console.error("Error deleting the review:", error);
+      console.error('Error deleting the review:', error);
     }
   };
 
@@ -64,7 +63,11 @@ const Review = ({ review, endpoint, onUpdate }) => {
       >
         <CardContent>
           {review.is_reviewer && (
-            <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Typography
                 variant="subtitle2"
                 color="text.secondary"
@@ -94,10 +97,7 @@ const Review = ({ review, endpoint, onUpdate }) => {
       </Card>
 
       {/* Confirmation Dialog */}
-      <Dialog
-        open={openDialog}
-        onClose={handleDialogClose}
-      >
+      <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <Typography>Are you sure you want to delete this review?</Typography>
