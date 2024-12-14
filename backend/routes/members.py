@@ -6,7 +6,7 @@ from pydantic import EmailStr
 
 from config import db
 from utils import get_auth_id, get_auth_id_admin
-from models import Prof, Review, Student
+from models import Prof, Review, ReviewFrontend, Student
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -54,7 +54,7 @@ async def prof_post(profs: list[Prof]):
 
 
 @router.get("/reviews/{email}")
-async def prof_reviews_get(email: EmailStr):
+async def prof_reviews_get(email: EmailStr, auth_id: str = Depends(get_auth_id)):
     """
     Helper to return all reviews under a given Prof email.
     This function returns None if the prof does not exist
@@ -65,7 +65,10 @@ async def prof_reviews_get(email: EmailStr):
     if not prof_reviews:
         return None
 
-    return [Review(**i).model_dump() for i in prof_reviews.get("reviews", {}).values()]
+    return [
+        ReviewFrontend(**v, is_reviewer=(k == auth_id)).model_dump()
+        for k, v in prof_reviews.get("reviews", {}).items()
+    ]
 
 
 @router.post("/reviews/{email}")
@@ -79,6 +82,17 @@ async def prof_reviews_post(
     """
     await profs_collection.update_one(
         {"email": email}, {"$set": {f"reviews.{auth_id}": review.model_dump()}}
+    )
+
+
+@router.delete("/reviews/{email}")
+async def prof_reviews_delete(email: EmailStr, auth_id: str = Depends(get_auth_id)):
+    """
+    Helper to delete a review posted by the authenticated user on a professor.
+    If the user hasn't posted a review, no action will be taken.
+    """
+    await profs_collection.update_one(
+        {"email": email}, {"$unset": {f"reviews.{auth_id}": ""}}
     )
 
 

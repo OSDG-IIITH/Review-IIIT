@@ -5,7 +5,7 @@ from pydantic import EmailStr
 from routes.members import prof_exists
 from config import db
 from utils import get_auth_id, get_auth_id_admin
-from models import Course, Review, Sem, CourseCode
+from models import Course, Review, ReviewFrontend, Sem, CourseCode
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -19,7 +19,7 @@ async def course_list(
     prof_filter: EmailStr | None = None,
 ):
     """
-    List all courses. 
+    List all courses.
     This does not return the reviews attribute, that must be queried individually.
     Can optionally pass filters for:
     - course semester
@@ -74,7 +74,9 @@ async def course_post(courses: list[Course]):
 
 
 @router.get("/reviews/{sem}/{code}")
-async def course_reviews_get(sem: Sem, code: CourseCode):
+async def course_reviews_get(
+    sem: Sem, code: CourseCode, auth_id: str = Depends(get_auth_id)
+):
     """
     Helper to return all reviews under a given course.
     This function returns None if the course does not exist
@@ -86,7 +88,8 @@ async def course_reviews_get(sem: Sem, code: CourseCode):
         return None
 
     return [
-        Review(**i).model_dump() for i in course_reviews.get("reviews", {}).values()
+        ReviewFrontend(**v, is_reviewer=(k == auth_id)).model_dump()
+        for k, v in course_reviews.get("reviews", {}).items()
     ]
 
 
@@ -102,4 +105,18 @@ async def course_reviews_post(
     await course_collection.update_one(
         {"sem": sem, "code": code},
         {"$set": {f"reviews.{auth_id}": review.model_dump()}},
+    )
+
+
+@router.delete("/reviews/{sem}/{code}")
+async def course_reviews_delete(
+    sem: Sem, code: CourseCode, auth_id: str = Depends(get_auth_id)
+):
+    """
+    Helper to delete a review posted by the authenticated user on a professor.
+    If the user hasn't posted a review, no action will be taken.
+    """
+    await course_collection.update_one(
+        {"sem": sem, "code": code},
+        {"$unset": {f"reviews.{auth_id}": ""}}
     )

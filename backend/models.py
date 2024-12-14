@@ -35,6 +35,7 @@ class Review(BaseModel):
     rating: Literal[1, 2, 3, 4, 5]
     content: str = Field(..., min_length=1, max_length=MSG_MAX_LEN)
     dtime: AwareDatetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
     # TODO: upvote/downvote system
     # upvoters: set[str]  # set of student emails
     # downvoters: set[str]  # set of student emails
@@ -47,6 +48,15 @@ class Review(BaseModel):
             if dtime and dtime.tzinfo is None:  # Check if datetime is naive
                 values["dtime"] = dtime.replace(tzinfo=timezone.utc)  # Make it aware
         return values
+
+
+class ReviewFrontend(Review):
+    """
+    This represents a Review as it is seen from the frontend. Some attributes
+    with the backend are common, but some are not.
+    """
+
+    is_reviewer: bool
 
 
 class Member(BaseModel):
