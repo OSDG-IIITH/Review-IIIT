@@ -140,7 +140,7 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
     } else {
       fetchReviews();
     }
-  }
+  };
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -151,8 +151,7 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
     if (initExpanded != isExpanded) {
       /* reviews will be updated in the isExpanded watcher */
       setIsExpanded(initExpanded);
-    }
-    else {
+    } else {
       /* isExpanded watcher will not be called, so force update here */
       if (initExpanded) {
         fetchReviewsAllowCache();
