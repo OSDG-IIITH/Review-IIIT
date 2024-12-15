@@ -164,22 +164,13 @@ const Courses = ({ courseList, profMap }) => {
           >
             No match found for given filters.
           </Typography>
-        ) : filteredCourses.length > 50 ? (
-          <Typography
-            variant="body2"
-            color="text.primary"
-            sx={{ fontStyle: 'italic' }}
-          >
-            Too many matches for given filters, please narrow them down.
-          </Typography>
         ) : (
           filteredCourses.map((course, index) => (
             <ReviewBox
+              title={`[${course.code}] ${course.name} (${course.sem})`}
               endpoint={`/courses/reviews/${course.sem}/${course.code}`}
+              initExpanded={filteredCourses.length < 10}
             >
-              <Typography variant="h5" gutterBottom color="primary">
-                [{course.code}] {course.name} ({course.sem})
-              </Typography>
               {course.profs.map((email) => {
                 const prof = profMap.get(email);
                 return prof ? (

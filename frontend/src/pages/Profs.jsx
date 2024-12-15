@@ -62,11 +62,11 @@ const Profs = ({ profList }) => {
         </Tooltip>
       </Box>
       {reviewProf ? (
-        <ReviewBox endpoint={`/members/reviews/${reviewProf.email}`}>
-          <Typography variant="h5" gutterBottom color="primary">
-            {reviewProf.name} &lt;{reviewProf.email}&gt;
-          </Typography>
-        </ReviewBox>
+        <ReviewBox
+          title={`${reviewProf.name} <${reviewProf.email}>`}
+          endpoint={`/members/reviews/${reviewProf.email}`}
+          initExpanded={true}
+        />
       ) : (
         <Typography
           variant="body2"
