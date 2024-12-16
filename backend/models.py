@@ -26,6 +26,9 @@ CourseCode: TypeAlias = Annotated[
 # TODO: can make this regex more precise
 StudentRollno: TypeAlias = Annotated[str, StringConstraints(pattern=r"^\d{10}$")]
 
+# A vote can be 1 (upvote), -1 (downvote) or 0 (no vote)
+Vote: TypeAlias = Literal[-1, 0, 1]
+
 
 class Review(BaseModel):
     """
@@ -35,10 +38,6 @@ class Review(BaseModel):
     rating: Literal[1, 2, 3, 4, 5]
     content: str = Field(..., min_length=1, max_length=MSG_MAX_LEN)
     dtime: AwareDatetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-    # TODO: upvote/downvote system
-    # upvoters: set[str]  # set of student emails
-    # downvoters: set[str]  # set of student emails
 
     # Model-level validator that runs before individual field validation
     @model_validator(mode="before")
@@ -50,13 +49,35 @@ class Review(BaseModel):
         return values
 
 
+class ReviewBackend(Review):
+    """
+    This represents a Review as it is stored in the backend (db).
+    """
+
+    # mapping from student hash to vote.
+    # this dict is not to be exposed to the frontend directly, as the hashes
+    # must not be exposed.
+    votes: dict[str, Vote] = Field(default_factory=dict)
+
+
 class ReviewFrontend(Review):
     """
     This represents a Review as it is seen from the frontend. Some attributes
     with the backend are common, but some are not.
     """
 
+    # The id of the Review as visible to the frontend. This is the encrypted
+    # reviewer hash.
+    review_id: str
+
+    # stores whether viewer is the author of the review
     is_reviewer: bool
+
+    # aggregate of votes
+    votes_aggregate: int
+
+    # stores the upvote/downvote status of the author
+    votes_status: Vote
 
 
 class Member(BaseModel):
@@ -92,3 +113,12 @@ class Course(BaseModel):
     sem: Sem
     name: str = Field(..., min_length=1)
     profs: list[EmailStr]  # list of prof emails
+
+
+class VoteAndReviewID(BaseModel):
+    """
+    Base class for storing a vote and review_id (used in post body for vote API)
+    """
+
+    vote: Vote
+    review_id: str

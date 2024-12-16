@@ -10,7 +10,7 @@ import {
 import { api } from '../api';
 import { MSG_MAX_LEN } from '../constants';
 
-const ReviewInput = ({ endpoint, onUpdate }) => {
+const ReviewInput = ({ endpoint, onUpdate, hasReview }) => {
   const [rating, setRating] = useState(0); // State to hold rating value
   const [message, setMessage] = useState(''); // State to hold message
   const [isSubmitting, setIsSubmitting] = useState(false); // State to manage form submission state
@@ -81,7 +81,9 @@ const ReviewInput = ({ endpoint, onUpdate }) => {
           variant="outlined"
           fullWidth
           sx={{ marginTop: 1, marginBottom: 2 }}
-          inputProps={{ maxLength: MSG_MAX_LEN }} // Character limit set here
+          slotProps={{
+            htmlInput: { maxLength: MSG_MAX_LEN }, // Character limit set here
+          }}
         />
         <Tooltip
           title={
@@ -103,15 +105,17 @@ const ReviewInput = ({ endpoint, onUpdate }) => {
           </span>
         </Tooltip>
       </Box>
-      <Typography
-        variant="body2"
-        color="text.primary"
-        sx={{ fontStyle: 'italic' }}
-      >
-        To discourage spam, only one review per user per course/professor is
-        allowed. If you have previously posted a review here, it will be
-        overwritten if you resubmit a new review.
-      </Typography>
+      {hasReview && (
+        <Typography
+          variant="body2"
+          color="text.primary"
+          sx={{ fontStyle: 'italic' }}
+        >
+          To discourage spam, only one review per user per course/professor is
+          allowed. As you have already posted a review here, it will be
+          overwritten if you resubmit a new review.
+        </Typography>
+      )}
     </>
   );
 };

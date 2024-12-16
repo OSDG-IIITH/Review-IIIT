@@ -4,8 +4,16 @@ from pydantic import EmailStr
 
 from routes.members import prof_exists
 from config import db
-from utils import get_auth_id, get_auth_id_admin
-from models import Course, Review, ReviewFrontend, Sem, CourseCode
+from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
+from models import (
+    Course,
+    Review,
+    ReviewBackend,
+    ReviewFrontend,
+    Sem,
+    CourseCode,
+    VoteAndReviewID,
+)
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -87,9 +95,21 @@ async def course_reviews_get(
     if not course_reviews:
         return None
 
+    course_reviews_validated = [
+        (k, ReviewBackend(**v)) for k, v in course_reviews.get("reviews", {}).items()
+    ]
+
     return [
-        ReviewFrontend(**v, is_reviewer=(k == auth_id)).model_dump()
-        for k, v in course_reviews.get("reviews", {}).items()
+        ReviewFrontend(
+            rating=v.rating,
+            content=v.content,
+            dtime=v.dtime,
+            review_id=hash_encrypt(k),
+            is_reviewer=(k == auth_id),
+            votes_aggregate=sum(v.votes.values()),
+            votes_status=v.votes.get(auth_id, 0),
+        ).model_dump()
+        for k, v in course_reviews_validated
     ]
 
 
@@ -104,7 +124,16 @@ async def course_reviews_post(
     """
     await course_collection.update_one(
         {"sem": sem, "code": code},
-        {"$set": {f"reviews.{auth_id}": review.model_dump()}},
+        [
+            {
+                "$set": {
+                    # do merge objects to keep old votes intact
+                    f"reviews.{auth_id}": {
+                        "$mergeObjects": [f"$reviews.{auth_id}", review.model_dump()]
+                    }
+                }
+            }
+        ],
     )
 
 
@@ -119,4 +148,28 @@ async def course_reviews_delete(
     await course_collection.update_one(
         {"sem": sem, "code": code},
         {"$unset": {f"reviews.{auth_id}": ""}}
+    )
+
+
+@router.post("/reviews/{sem}/{code}/votes")
+async def course_reviews_votes_post(
+    sem: Sem,
+    code: CourseCode,
+    post_body: VoteAndReviewID,
+    auth_id: str = Depends(get_auth_id),
+):
+    """
+    Helper to post a vote on a single Review on a Course.
+    """
+    review_hash = hash_decrypt(post_body.review_id)
+    if not review_hash:
+        raise HTTPException(422, "Invalid review_id value")
+
+    await course_collection.update_one(
+        {"sem": sem, "code": code},
+        {
+            "$set" if post_body.vote else "$unset": {
+                f"reviews.{review_hash}.votes.{auth_id}": post_body.vote
+            }
+        },
     )

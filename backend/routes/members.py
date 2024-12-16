@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 
 from config import db
-from utils import get_auth_id, get_auth_id_admin
-from models import Prof, Review, ReviewFrontend, Student
+from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
+from models import Prof, Review, ReviewBackend, ReviewFrontend, Student, VoteAndReviewID
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -65,9 +65,21 @@ async def prof_reviews_get(email: EmailStr, auth_id: str = Depends(get_auth_id))
     if not prof_reviews:
         return None
 
+    prof_reviews_validated = [
+        (k, ReviewBackend(**v)) for k, v in prof_reviews.get("reviews", {}).items()
+    ]
+
     return [
-        ReviewFrontend(**v, is_reviewer=(k == auth_id)).model_dump()
-        for k, v in prof_reviews.get("reviews", {}).items()
+        ReviewFrontend(
+            rating=v.rating,
+            content=v.content,
+            dtime=v.dtime,
+            review_id=hash_encrypt(k),
+            is_reviewer=(k == auth_id),
+            votes_aggregate=sum(v.votes.values()),
+            votes_status=v.votes.get(auth_id, 0),
+        ).model_dump()
+        for k, v in prof_reviews_validated
     ]
 
 
@@ -81,7 +93,17 @@ async def prof_reviews_post(
     review discards any older reviews.
     """
     await profs_collection.update_one(
-        {"email": email}, {"$set": {f"reviews.{auth_id}": review.model_dump()}}
+        {"email": email},
+        [
+            {
+                "$set": {
+                    # do merge objects to keep old votes intact
+                    f"reviews.{auth_id}": {
+                        "$mergeObjects": [f"$reviews.{auth_id}", review.model_dump()]
+                    }
+                }
+            }
+        ],
     )
 
 
@@ -93,6 +115,29 @@ async def prof_reviews_delete(email: EmailStr, auth_id: str = Depends(get_auth_i
     """
     await profs_collection.update_one(
         {"email": email}, {"$unset": {f"reviews.{auth_id}": ""}}
+    )
+
+
+@router.post("/reviews/{email}/votes")
+async def course_reviews_votes_post(
+    email: EmailStr,
+    post_body: VoteAndReviewID,
+    auth_id: str = Depends(get_auth_id),
+):
+    """
+    Helper to post a vote on a single Review on a Prof.
+    """
+    review_hash = hash_decrypt(post_body.review_id)
+    if not review_hash:
+        raise HTTPException(422, "Invalid review_id value")
+
+    await profs_collection.update_one(
+        {"email": email},
+        {
+            "$set" if post_body.vote else "$unset": {
+                f"reviews.{review_hash}.votes.{auth_id}": post_body.vote
+            }
+        },
     )
 
 

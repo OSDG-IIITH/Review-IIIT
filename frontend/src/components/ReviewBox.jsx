@@ -3,119 +3,19 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  Tooltip,
   Typography,
   Box,
-  Rating,
   IconButton,
-  useTheme,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import theme from '../theme';
+import Review from './Review';
 import ReviewInput from './ReviewInput';
 
 import { api } from '../api';
-
-const Review = ({ review, endpoint, onUpdate }) => {
-  const theme = useTheme(); // Access the theme
-
-  const [openDialog, setOpenDialog] = useState(false); // State for the dialog
-
-  const formattedDate = new Date(review.dtime).toLocaleString();
-
-  const handleDelete = async () => {
-    try {
-      await api.delete(endpoint);
-      await onUpdate();
-      setOpenDialog(false); // Close dialog after deletion
-    } catch (error) {
-      // TODO: convey message to frontend
-      console.error('Error deleting the review:', error);
-    }
-  };
-
-  const handleDialogClose = () => {
-    setOpenDialog(false);
-  };
-
-  const handleDialogOpen = () => {
-    setOpenDialog(true);
-  };
-
-  return (
-    <>
-      <Card
-        variant="outlined"
-        sx={{
-          margin: 2,
-          backgroundColor: review.is_reviewer
-            ? theme.palette.action.hover
-            : theme.palette.background.paper,
-          border: review.is_reviewer
-            ? `1px solid ${theme.palette.secondary.main}`
-            : `1px solid ${theme.palette.divider}`,
-        }}
-      >
-        <CardContent>
-          {review.is_reviewer && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                sx={{ fontStyle: 'italic' }}
-              >
-                Your review (this line is only visible to you)
-              </Typography>
-              <IconButton onClick={handleDialogOpen} color="error" size="small">
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          )}
-          <Box display="flex" alignItems="center" sx={{ marginTop: 1 }}>
-            <Rating value={review.rating} readOnly precision={1} />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ marginLeft: 1 }}
-            >
-              {formattedDate}
-            </Typography>
-          </Box>
-          <Typography variant="body1" sx={{ marginTop: 1 }}>
-            {review.content}
-          </Typography>
-        </CardContent>
-      </Card>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to delete this review?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} color="error">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  );
-};
 
 const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
   const [reviewsList, setReviewsList] = useState(null);
@@ -123,7 +23,6 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
   const cache = useRef({}); // Cache for reviews data
 
   const fetchReviews = async () => {
-    setReviewsList(null);
     try {
       const response = await api.get(endpoint);
       cache.current[endpoint] = response.data;
@@ -184,9 +83,17 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
           <Typography variant="h5" color="primary">
             {title}
           </Typography>
-          <IconButton onClick={toggleExpand} size="small">
-            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
+          <Tooltip
+            title={
+              isExpanded
+                ? 'Click to collapse section'
+                : 'Click to expand section'
+            }
+          >
+            <IconButton onClick={toggleExpand} size="small">
+              {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </IconButton>
+          </Tooltip>
         </Box>
         {isExpanded && (
           <>
@@ -223,7 +130,13 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
                 />
               ))
             )}
-            <ReviewInput endpoint={endpoint} onUpdate={fetchReviews} />
+            {reviewsList !== null && (
+              <ReviewInput
+                endpoint={endpoint}
+                onUpdate={fetchReviews}
+                hasReview={reviewsList.some((review) => review.is_reviewer)}
+              />
+            )}
           </>
         )}
       </CardContent>

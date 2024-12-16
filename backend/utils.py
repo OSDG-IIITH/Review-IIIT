@@ -1,8 +1,13 @@
+import base64
+from cryptography.fernet import Fernet, InvalidToken
 from fastapi import HTTPException, Request
 from fastapi.responses import RedirectResponse
 import jwt
 
 from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET, HOST_SECURE
+
+
+secure_key = Fernet.generate_key()
 
 
 def get_auth_id(request: Request) -> str:
@@ -68,3 +73,21 @@ def set_auth_id(response: RedirectResponse, uid: str | None):
             secure=HOST_SECURE,
             samesite="strict",
         )
+
+
+def hash_encrypt(reviewer_hash: str):
+    """
+    Converts reviewer hash (identifier associated with reviews) to a id that
+    can be safely sent to the client side.
+    """
+    return Fernet(secure_key).encrypt(base64.b64decode(reviewer_hash)).decode()
+
+
+def hash_decrypt(reviewer_id: str):
+    """
+    Converts a reviewer id to the hash (identifier associated with reviews)
+    """
+    try:
+        return base64.b64encode(Fernet(secure_key).decrypt(reviewer_id)).decode()
+    except InvalidToken:
+        return None
