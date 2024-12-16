@@ -41,7 +41,11 @@ const UpvoteDownvote = ({ review, endpoint, onUpdate }) => {
       borderColor="text.secondary"
       mt={2}
     >
-      <Tooltip title={isSelected(1) ? 'Click to remove upvote' : 'Click to upvote review'}>
+      <Tooltip
+        title={
+          isSelected(1) ? 'Click to remove upvote' : 'Click to upvote review'
+        }
+      >
         <IconButton
           onClick={() => handleVote(1)}
           color={isSelected(1) ? 'success' : 'default'}
@@ -53,7 +57,13 @@ const UpvoteDownvote = ({ review, endpoint, onUpdate }) => {
       <Typography variant="body1" size="small">
         {review.votes_aggregate}
       </Typography>
-      <Tooltip title={isSelected(-1) ? 'Click to remove downvote' : 'Click to downvote review'}>
+      <Tooltip
+        title={
+          isSelected(-1)
+            ? 'Click to remove downvote'
+            : 'Click to downvote review'
+        }
+      >
         <IconButton
           onClick={() => handleVote(-1)}
           color={review.votes_status === -1 ? 'error' : 'default'}
