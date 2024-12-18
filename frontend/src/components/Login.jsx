@@ -12,7 +12,9 @@ const LoginButton = ({ isLoggedIn }) => {
         gap: 2,
       }}
     >
-      <Tooltip title={isLoggedIn ? 'You are logged in already' : 'Login with CAS'}>
+      <Tooltip
+        title={isLoggedIn ? 'You are logged in already' : 'Login with CAS'}
+      >
         <span>
           <Button
             variant="contained"

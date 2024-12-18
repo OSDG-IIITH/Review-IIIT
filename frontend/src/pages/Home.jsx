@@ -21,10 +21,10 @@ const Home = ({ isLoggedIn }) => {
         whether the grading feels fair. 📝
       </Typography>
       <Typography variant="h6" align="center" paragraph color="text.secondary">
-        The best part? 🌟 It's totally anonymous, so you can keep it real without
-        worrying about any awkward run-ins.  And it's super simple to use - just
-        search by course or professor and see what others are saying. So, if
-        you've got thoughts, share them! And if you're curious about that one
+        The best part? 🌟 It's totally anonymous, so you can keep it real
+        without worrying about any awkward run-ins. And it's super simple to use
+        - just search by course or professor and see what others are saying. So,
+        if you've got thoughts, share them! And if you're curious about that one
         class everyone's whispering about, this is your spot to find out. 🚀
       </Typography>
 
@@ -53,7 +53,12 @@ const Home = ({ isLoggedIn }) => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={6} name="tos">
-            <Typography variant="h4" gutterBottom color="secondary" sx={{ mb: 4 }}>
+            <Typography
+              variant="h4"
+              gutterBottom
+              color="secondary"
+              sx={{ mb: 4 }}
+            >
               📜 Terms of Use
             </Typography>
             <Typography variant="body1" color="text.secondary" gutterBottom>

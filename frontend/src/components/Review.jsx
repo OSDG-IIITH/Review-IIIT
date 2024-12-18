@@ -94,8 +94,11 @@ const Review = ({ review, endpoint, onUpdate }) => {
               {formattedDate}
             </Typography>
           </Box>
-          <Typography variant="body1" sx={{ marginTop: 1, whiteSpace: 'pre-line' }}>
-            {review.content.replace(/\n{3,}/g, '\n\n')}  
+          <Typography
+            variant="body1"
+            sx={{ marginTop: 1, whiteSpace: 'pre-line' }}
+          >
+            {review.content.replace(/\n{3,}/g, '\n\n')}
           </Typography>
           <UpvoteDownvote
             review={review}
