@@ -37,6 +37,7 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
     if (cache.current[endpoint]) {
       setReviewsList(cache.current[endpoint]);
     } else {
+      setReviewsList(null);  // show loading
       fetchReviews();
     }
   };

@@ -1,5 +1,5 @@
 import { Button, Box, Tooltip } from '@mui/material';
-import { do_login, do_logout } from '../api';
+import { do_login } from '../api';
 
 const LoginButton = ({ isLoggedIn }) => {
   // UI rendering
@@ -12,15 +12,18 @@ const LoginButton = ({ isLoggedIn }) => {
         gap: 2,
       }}
     >
-      <Tooltip title={isLoggedIn ? 'Logout with CAS' : 'Login with CAS'}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={isLoggedIn ? do_logout : do_login}
-          sx={{ marginTop: 2, minWidth: 150, size: 'large' }}
-        >
-          {isLoggedIn ? 'Logout' : 'Login'}
-        </Button>
+      <Tooltip title={isLoggedIn ? 'You are logged in already' : 'Login with CAS'}>
+        <span>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={do_login}
+            sx={{ marginTop: 2, minWidth: 150, size: 'large' }}
+            disabled={isLoggedIn}
+          >
+            Login
+          </Button>
+        </span>
       </Tooltip>
     </Box>
   );

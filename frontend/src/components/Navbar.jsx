@@ -34,12 +34,11 @@ const Navbar = ({ isLoggedIn }) => {
           to="/"
           size="large"
           sx={{
-            flexGrow: 1,
             textDecoration: 'none',
             color: 'inherit',
           }}
         >
-          ReviewIIITH
+          📝 ReviewIIITH
         </Typography>
         {isLoggedIn ? (
           <Box sx={{ display: 'flex', gap: 1 }}>
