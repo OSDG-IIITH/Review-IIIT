@@ -4,16 +4,53 @@ import { HOST_SUBPATH } from './constants';
 
 const API_PREFIX = `${HOST_SUBPATH}api`;
 
-const api = axios.create({
-  baseURL: API_PREFIX,
-  withCredentials: true,
-  maxRedirects: 0,
-});
+const api = axios.create({ baseURL: API_PREFIX });
+
+/* Error handling API */
+let errMsgCallback = null;
+const set_errmsg_callback = (callback) => {
+  errMsgCallback = callback;
+};
+const set_errmsg = (msg) => {
+  if (errMsgCallback) {
+    errMsgCallback(msg);
+  }
+};
+const clear_errmsg = () => {
+  set_errmsg(null);
+};
+
+/* Intercept all API errors, convert them to human readable format and handle it */
+api.interceptors.response.use(
+  (response) => response, // Pass successful responses as-is
+  (error) => {
+    let err_msg = 'Unknown error';
+    if (error.response) {
+      const detail = error.response.data?.detail || error.response.data?.message;
+      let more_info = 'Not specified';
+      if (Array.isArray(detail)) {
+        more_info = detail.map((item) => item.msg || JSON.stringify(item)).join(', ');
+      } else if (typeof detail === 'string' && detail) {
+        more_info = detail;
+      }
+
+      err_msg = `Backend returned an error: [code ${error.response.status}] ${more_info}`;
+    } else if (error.request) {
+      err_msg = "Backend must be down or under maintenance, it did not respond.";
+    } else {
+      err_msg = `Could not setup backend request: ${error.message}`;
+    }
+
+    set_errmsg(err_msg);
+    return Promise.reject({ message: err_msg });
+  }
+);
 
 function prefix_api(str) {
   return API_PREFIX + str;
 }
 
+/* Login/logout API wrappers */
 let logoutCallback = null;
 
 const set_logout_callback = (callback) => {
@@ -34,4 +71,4 @@ function do_logout() {
   window.location.href = prefix_api('/logout');
 }
 
-export { api, do_login, do_logout, set_logout_callback };
+export { api, do_login, do_logout, set_logout_callback, set_errmsg_callback, clear_errmsg };

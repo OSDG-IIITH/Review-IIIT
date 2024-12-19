@@ -14,11 +14,12 @@ import Profs from './pages/Profs';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FullPageLoader from './components/FullPageLoader';
+import ErrorDialog from './components/ErrorDialog';
 
 import './App.css'; // Import the global styles
 import theme from './theme';
 
-import { api, set_logout_callback } from './api';
+import { api, set_logout_callback, set_errmsg_callback } from './api';
 
 import { HOST_SUBPATH } from './constants';
 
@@ -33,6 +34,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [courseList, setCourseList] = useState(null);
   const [profList, setProfList] = useState(null);
+  const [errMsg, setErrMsg] = useState(null);
 
   const logoutHandler = () => {
     setIsLoggedIn(false);
@@ -42,6 +44,7 @@ function App() {
 
   useEffect(() => {
     set_logout_callback(logoutHandler);
+    set_errmsg_callback(setErrMsg);
     const checkLoginAndFetchLists = async () => {
       try {
         const response_login = await api.get('/has_login');
@@ -76,9 +79,8 @@ function App() {
         } else {
           logoutHandler();
         }
-      } catch (err) {
-        // TODO: display error in some popup
-        logoutHandler();
+      } catch (error) {
+        console.error('Error fetching login status and details:', error);
       }
     };
 
@@ -86,7 +88,7 @@ function App() {
   }, []);
 
   if (isLoggedIn === null) {
-    return <FullPageLoader />;
+    return <><FullPageLoader /><ErrorDialog errorMessage={errMsg} /></>;
   }
 
   // make a Map out of profList data for efficient name lookup from email
@@ -131,6 +133,7 @@ function App() {
             </Routes>
           </Box>
           <Footer />
+          <ErrorDialog errorMessage={errMsg} />
         </Box>
       </Router>
     </ThemeProvider>

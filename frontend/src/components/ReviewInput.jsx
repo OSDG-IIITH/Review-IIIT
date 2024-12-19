@@ -48,7 +48,6 @@ const ReviewInput = ({ endpoint, onUpdate, hasReview }) => {
       setMessage('');
       await onUpdate();
     } catch (error) {
-      // Handle error during API request
       console.error(`Error: ${error.message}`);
     } finally {
       setIsSubmitting(false); // Reset submission state

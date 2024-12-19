@@ -28,7 +28,6 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
       cache.current[endpoint] = response.data;
       setReviewsList(response.data);
     } catch (error) {
-      // TODO: report error in frontend
       console.error('Error during search:', error);
     }
   };

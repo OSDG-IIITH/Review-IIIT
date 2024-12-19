@@ -32,7 +32,6 @@ const Review = ({ review, endpoint, onUpdate }) => {
       await onUpdate();
       setOpenDialog(false); // Close dialog after deletion
     } catch (error) {
-      // TODO: convey message to frontend
       console.error('Error deleting the review:', error);
     }
   };
