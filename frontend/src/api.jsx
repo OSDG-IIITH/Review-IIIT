@@ -26,17 +26,21 @@ api.interceptors.response.use(
   (error) => {
     let err_msg = 'Unknown error';
     if (error.response) {
-      const detail = error.response.data?.detail || error.response.data?.message;
+      const detail =
+        error.response.data?.detail || error.response.data?.message;
       let more_info = 'Not specified';
       if (Array.isArray(detail)) {
-        more_info = detail.map((item) => item.msg || JSON.stringify(item)).join(', ');
+        more_info = detail
+          .map((item) => item.msg || JSON.stringify(item))
+          .join(', ');
       } else if (typeof detail === 'string' && detail) {
         more_info = detail;
       }
 
       err_msg = `Backend returned an error: [code ${error.response.status}] ${more_info}`;
     } else if (error.request) {
-      err_msg = "Backend must be down or under maintenance, it did not respond.";
+      err_msg =
+        'Backend must be down or under maintenance, it did not respond.';
     } else {
       err_msg = `Could not setup backend request: ${error.message}`;
     }
@@ -71,4 +75,11 @@ function do_logout() {
   window.location.href = prefix_api('/logout');
 }
 
-export { api, do_login, do_logout, set_logout_callback, set_errmsg_callback, clear_errmsg };
+export {
+  api,
+  do_login,
+  do_logout,
+  set_logout_callback,
+  set_errmsg_callback,
+  clear_errmsg,
+};

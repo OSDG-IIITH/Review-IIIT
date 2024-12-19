@@ -88,7 +88,12 @@ function App() {
   }, []);
 
   if (isLoggedIn === null) {
-    return <><FullPageLoader /><ErrorDialog errorMessage={errMsg} /></>;
+    return (
+      <>
+        <FullPageLoader />
+        <ErrorDialog errorMessage={errMsg} />
+      </>
+    );
   }
 
   // make a Map out of profList data for efficient name lookup from email
