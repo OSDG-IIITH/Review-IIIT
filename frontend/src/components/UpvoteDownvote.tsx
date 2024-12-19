@@ -4,9 +4,14 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 import { api } from '../api';
+import { FetchReviewsCallback, ReviewType, Vote } from '../types';
 
-const UpvoteDownvote = ({ review, endpoint, onUpdate }) => {
-  const sendVoteToAPI = async (vote) => {
+const UpvoteDownvote: React.FC<{
+  review: ReviewType;
+  endpoint: string;
+  onUpdate: FetchReviewsCallback;
+}> = ({ review, endpoint, onUpdate }) => {
+  const sendVoteToAPI = async (vote: Vote) => {
     try {
       await api.post(`${endpoint}/votes`, {
         vote: vote,
@@ -18,11 +23,11 @@ const UpvoteDownvote = ({ review, endpoint, onUpdate }) => {
     }
   };
 
-  const isSelected = (newStatus) => {
+  const isSelected = (newStatus: Vote) => {
     return review.votes_status === newStatus;
   };
 
-  const handleVote = async (newStatus) => {
+  const handleVote = async (newStatus: Vote) => {
     if (isSelected(newStatus)) {
       await sendVoteToAPI(0);
     } else {
@@ -54,9 +59,7 @@ const UpvoteDownvote = ({ review, endpoint, onUpdate }) => {
           <ThumbUpIcon />
         </IconButton>
       </Tooltip>
-      <Typography variant="body1" size="small">
-        {review.votes_aggregate}
-      </Typography>
+      <Typography variant="body1">{review.votes_aggregate}</Typography>
       <Tooltip
         title={
           isSelected(-1)

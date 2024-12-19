@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -22,8 +22,9 @@ import theme from './theme';
 import { api, set_logout_callback, set_errmsg_callback } from './api';
 
 import { HOST_SUBPATH } from './constants';
+import { CourseType, ProfType } from './types';
 
-function App() {
+const App: React.FC = () => {
   // Check if the current path is outside the subpath
   if (!window.location.pathname.startsWith(HOST_SUBPATH)) {
     const normalizedPath = `${HOST_SUBPATH}${window.location.pathname}`;
@@ -31,10 +32,10 @@ function App() {
     return null; // Render nothing until the redirection happens
   }
 
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const [courseList, setCourseList] = useState(null);
-  const [profList, setProfList] = useState(null);
-  const [errMsg, setErrMsg] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [courseList, setCourseList] = useState<CourseType[] | null>(null);
+  const [profList, setProfList] = useState<ProfType[] | null>(null);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
 
   const logoutHandler = () => {
     setIsLoggedIn(false);
@@ -47,16 +48,16 @@ function App() {
     set_errmsg_callback(setErrMsg);
     const checkLoginAndFetchLists = async () => {
       try {
-        const response_login = await api.get('/has_login');
+        const response_login = await api.get<boolean>('/has_login');
         setIsLoggedIn(response_login.data);
         if (response_login.data) {
-          const response_members = await api.get('/members/');
+          const response_members = await api.get<ProfType[]>('/members/');
           // sort by ascending order of name
           setProfList(
             response_members.data.sort((a, b) => a.name.localeCompare(b.name))
           );
 
-          const response_courses = await api.get('/courses/');
+          const response_courses = await api.get<CourseType[]>('/courses/');
           response_courses.data.sort((a, b) => {
             // Extract year and term (S/M) for comparison
             const [termA, yearA] = [a.sem[0], parseInt(a.sem.slice(1))];
@@ -143,6 +144,6 @@ function App() {
       </Router>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

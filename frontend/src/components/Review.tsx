@@ -18,11 +18,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import UpvoteDownvote from './UpvoteDownvote';
 import { api } from '../api';
+import { FetchReviewsCallback, ReviewType } from '../types';
 
-const Review = ({ review, endpoint, onUpdate }) => {
+const Review: React.FC<{
+  review: ReviewType;
+  endpoint: string;
+  onUpdate: FetchReviewsCallback;
+}> = ({ review, endpoint, onUpdate }) => {
   const theme = useTheme(); // Access the theme
 
-  const [openDialog, setOpenDialog] = useState(false); // State for the dialog
+  const [openDialog, setOpenDialog] = useState<boolean>(false); // State for the dialog
 
   const formattedDate = new Date(review.dtime).toLocaleString();
 

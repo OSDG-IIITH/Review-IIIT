@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Typography, Link } from '@mui/material';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <Box
       sx={{

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircularProgress, Box } from '@mui/material';
 
-const FullPageLoader = () => {
+const FullPageLoader: React.FC = () => {
   return (
     <Box
       sx={{

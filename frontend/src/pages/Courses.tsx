@@ -12,12 +12,18 @@ import {
 import FullPageLoader from '../components/FullPageLoader';
 
 import ReviewBox from '../components/ReviewBox';
+import { CourseType, NameAndCode, ProfType } from '../types';
 
-const Courses = ({ courseList, profMap }) => {
-  const [semFilter, setSemFilter] = useState(null);
-  const [codeFilter, setCodeFilter] = useState(null);
-  const [profFilter, setProfFilter] = useState(null);
-  const [filteredCourses, setFilteredCourses] = useState(null);
+const Courses: React.FC<{
+  courseList: CourseType[] | null;
+  profMap: Map<string, ProfType> | null;
+}> = ({ courseList, profMap }) => {
+  const [semFilter, setSemFilter] = useState<string | null>(null);
+  const [codeFilter, setCodeFilter] = useState<NameAndCode | null>(null);
+  const [profFilter, setProfFilter] = useState<ProfType | null>(null);
+  const [filteredCourses, setFilteredCourses] = useState<CourseType[] | null>(
+    null
+  );
 
   const applyFilters = () => {
     if (!semFilter && !codeFilter && !profFilter) {
@@ -84,7 +90,7 @@ const Courses = ({ courseList, profMap }) => {
         .flatMap((course) => course.profs)
     )
   )
-    .map((email) => profMap.get(email))
+    .map((email) => profMap.get(email) || { name: email, email: email })
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -122,7 +128,6 @@ const Courses = ({ courseList, profMap }) => {
         alignItems="center"
         gap={1}
         sx={{ width: '100%', mb: 1 }}
-        size="small"
       >
         <Autocomplete
           options={profOptions}
@@ -167,6 +172,7 @@ const Courses = ({ courseList, profMap }) => {
         ) : (
           filteredCourses.map((course, index) => (
             <ReviewBox
+              key={index}
               title={`[${course.code}] ${course.name} (${course.sem})`}
               endpoint={`/courses/reviews/${course.sem}/${course.code}`}
               initExpanded={filteredCourses.length < 10}

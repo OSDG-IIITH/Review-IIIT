@@ -1,17 +1,18 @@
 import axios from 'axios';
 
 import { HOST_SUBPATH } from './constants';
+import { ErrorMessageCallback, LogoutCallback } from './types';
 
 const API_PREFIX = `${HOST_SUBPATH}api`;
 
 const api = axios.create({ baseURL: API_PREFIX });
 
 /* Error handling API */
-let errMsgCallback = null;
-const set_errmsg_callback = (callback) => {
+let errMsgCallback: ErrorMessageCallback | null = null;
+const set_errmsg_callback = (callback: ErrorMessageCallback) => {
   errMsgCallback = callback;
 };
-const set_errmsg = (msg) => {
+const set_errmsg = (msg: string | null) => {
   if (errMsgCallback) {
     errMsgCallback(msg);
   }
@@ -50,14 +51,14 @@ api.interceptors.response.use(
   }
 );
 
-function prefix_api(str) {
+function prefix_api(str: string) {
   return API_PREFIX + str;
 }
 
 /* Login/logout API wrappers */
-let logoutCallback = null;
+let logoutCallback: LogoutCallback | null = null;
 
-const set_logout_callback = (callback) => {
+const set_logout_callback = (callback: LogoutCallback) => {
   logoutCallback = callback;
 };
 

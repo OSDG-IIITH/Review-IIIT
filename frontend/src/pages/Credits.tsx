@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from '@mui/material';
 
-const Credits = () => {
+const Credits: React.FC = () => {
   return (
     <Container sx={{ mt: 6, mb: 6, color: 'text.primary' }}>
       <Typography variant="h3" gutterBottom align="center" color="primary">

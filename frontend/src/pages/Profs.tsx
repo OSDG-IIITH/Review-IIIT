@@ -12,10 +12,11 @@ import {
 import FullPageLoader from '../components/FullPageLoader';
 
 import ReviewBox from '../components/ReviewBox';
+import { ProfType } from '../types';
 
-const Profs = ({ profList }) => {
-  const [selectedProf, setSelectedProf] = useState(null);
-  const [reviewProf, setReviewProf] = useState(null);
+const Profs: React.FC<{ profList: ProfType[] | null }> = ({ profList }) => {
+  const [selectedProf, setSelectedProf] = useState<ProfType | null>(null);
+  const [reviewProf, setReviewProf] = useState<ProfType | null>(null);
 
   if (profList === null) {
     return <FullPageLoader />;

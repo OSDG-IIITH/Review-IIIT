@@ -1,7 +1,8 @@
+import React from 'react';
 import { Button, Box, Tooltip } from '@mui/material';
 import { do_login } from '../api';
 
-const LoginButton = ({ isLoggedIn }) => {
+const LoginButton: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
   // UI rendering
   return (
     <Box

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AppBar,
   Toolbar,
@@ -10,12 +11,12 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { do_login, do_logout } from '../api';
 
-const Navbar = ({ isLoggedIn }) => {
+const Navbar: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Adjust for small screens
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <AppBar position="static" color="primary">
@@ -32,7 +33,6 @@ const Navbar = ({ isLoggedIn }) => {
           variant="h6"
           component={Link}
           to="/"
-          size="large"
           sx={{
             textDecoration: 'none',
             color: 'inherit',

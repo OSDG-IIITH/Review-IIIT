@@ -9,21 +9,29 @@ import {
 } from '@mui/material';
 import { api } from '../api';
 import { MSG_MAX_LEN } from '../constants';
+import { FetchReviewsCallback } from '../types';
 
-const ReviewInput = ({ endpoint, onUpdate, hasReview }) => {
-  const [rating, setRating] = useState(0); // State to hold rating value
-  const [message, setMessage] = useState(''); // State to hold message
-  const [isSubmitting, setIsSubmitting] = useState(false); // State to manage form submission state
+const ReviewInput: React.FC<{
+  endpoint: string;
+  onUpdate: FetchReviewsCallback;
+  hasReview: boolean;
+}> = ({ endpoint, onUpdate, hasReview }) => {
+  const [rating, setRating] = useState<number>(0); // State to hold rating value
+  const [message, setMessage] = useState<string>(''); // State to hold message
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // State to manage form submission state
 
-  const handleRatingChange = (event, newValue) => {
-    setRating(newValue); // Update rating when user interacts with the Rating component
+  const handleRatingChange = (
+    event: React.SyntheticEvent,
+    newValue: number | null
+  ) => {
+    setRating(newValue ?? 0); // Update rating when user interacts with the Rating component
   };
 
-  const handleMessageChange = (event) => {
+  const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value); // Update message text as user types
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
     if (!rating || message.trim() === '') {
       return;
@@ -48,7 +56,7 @@ const ReviewInput = ({ endpoint, onUpdate, hasReview }) => {
       setMessage('');
       await onUpdate();
     } catch (error) {
-      console.error(`Error: ${error.message}`);
+      console.error('Failed to sumbit review', error);
     } finally {
       setIsSubmitting(false); // Reset submission state
     }

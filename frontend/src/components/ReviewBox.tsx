@@ -16,11 +16,17 @@ import Review from './Review';
 import ReviewInput from './ReviewInput';
 
 import { api } from '../api';
+import { ReviewType } from '../types';
 
-const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
-  const [reviewsList, setReviewsList] = useState(null);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const cache = useRef({}); // Cache for reviews data
+const ReviewBox: React.FC<{
+  children?: React.ReactNode;
+  title: string;
+  endpoint: string;
+  initExpanded: boolean;
+}> = ({ children, title, endpoint, initExpanded }) => {
+  const [reviewsList, setReviewsList] = useState<ReviewType[] | null>(null);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const cache = useRef<Record<string, ReviewType[]>>({}); // Cache for reviews data
 
   const fetchReviews = async () => {
     try {
@@ -124,6 +130,7 @@ const ReviewBox = ({ children, title, endpoint, initExpanded }) => {
             ) : (
               reviewsList.map((review, index) => (
                 <Review
+                  key={index}
                   review={review}
                   endpoint={endpoint}
                   onUpdate={fetchReviews}
