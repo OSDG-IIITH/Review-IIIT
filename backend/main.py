@@ -1,6 +1,6 @@
 """Initalizing fastapi"""
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -25,6 +25,36 @@ async def exception_404_handler(_, __):
     handle it, so redirect to it.
     """
     return FileResponse(f"{FRONTEND_PATH}/index.html")
+
+
+@app.get("/api/diagnostics")
+async def diagnostics(request: Request):
+    """
+    Endpoint to display all diagnostic information about the incoming request.
+    """
+    return {
+        "method": request.method,
+        "url": {
+            "str": str(request.url),
+            "is_secure": request.url.is_secure,
+            "scheme": request.url.scheme,
+            "netloc": {
+                "str": request.url.netloc,
+                "hostname": request.url.hostname,
+                "port": request.url.port,
+            },
+            "path": request.url.path,
+            "fragment": request.url.fragment,
+        },
+        "path_params": dict(request.path_params),
+        "query_params": dict(request.query_params),
+        "client": {
+            "host": request.client.host if request.client else "UNKNOWN",
+            "port": request.client.port if request.client else "UNKNOWN",
+        },
+        "headers": dict(request.headers),
+        "cookies": request.cookies,
+    }
 
 
 # serve frontend
