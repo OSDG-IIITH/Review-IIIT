@@ -5,7 +5,14 @@ import { ErrorMessageCallback, LogoutCallback } from './types';
 
 const API_PREFIX = `${HOST_SUBPATH}api`;
 
-const api = axios.create({ baseURL: API_PREFIX });
+const api = axios.create({
+  baseURL: API_PREFIX,
+  /* Enforce JSON for both requests and responses */
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
 
 /* Error handling API */
 let errMsgCallback: ErrorMessageCallback | null = null;
@@ -28,8 +35,10 @@ api.interceptors.response.use(
     let err_msg = 'Unknown error';
     if (error.response) {
       const detail =
-        error.response.data?.detail || error.response.data?.message;
-      let more_info = 'Not specified';
+        error.response.data?.detail ||
+        error.response.data?.message ||
+        error.response.statusText;
+      let more_info = 'More details unknown';
       if (Array.isArray(detail)) {
         more_info = detail
           .map((item) => item.msg || JSON.stringify(item))

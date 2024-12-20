@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import theme from '../theme';
 import Review from './Review';
@@ -24,17 +25,20 @@ const ReviewBox: React.FC<{
   endpoint: string;
   initExpanded: boolean;
 }> = ({ children, title, endpoint, initExpanded }) => {
-  const [reviewsList, setReviewsList] = useState<ReviewType[] | null>(null);
+  const [reviewsList, setReviewsList] = useState<
+    ReviewType[] | null | undefined
+  >(undefined);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const cache = useRef<Record<string, ReviewType[]>>({}); // Cache for reviews data
 
   const fetchReviews = async () => {
     try {
-      const response = await api.get(endpoint);
+      const response = await api.get<ReviewType[]>(endpoint);
       cache.current[endpoint] = response.data;
       setReviewsList(response.data);
     } catch (error) {
       console.error('Error during search:', error);
+      setReviewsList(null);
     }
   };
 
@@ -42,7 +46,7 @@ const ReviewBox: React.FC<{
     if (cache.current[endpoint]) {
       setReviewsList(cache.current[endpoint]);
     } else {
-      setReviewsList(null); // show loading
+      setReviewsList(undefined); // show loading
       fetchReviews();
     }
   };
@@ -61,7 +65,7 @@ const ReviewBox: React.FC<{
       if (initExpanded) {
         fetchReviewsAllowCache();
       } else {
-        setReviewsList(null);
+        setReviewsList(undefined);
       }
     }
   }, [endpoint]);
@@ -70,7 +74,7 @@ const ReviewBox: React.FC<{
     if (isExpanded) {
       fetchReviewsAllowCache();
     } else {
-      setReviewsList(null);
+      setReviewsList(undefined);
     }
   }, [isExpanded]);
 
@@ -112,18 +116,32 @@ const ReviewBox: React.FC<{
             >
               Reviews
             </Typography>
-            {reviewsList === null ? (
+            {reviewsList === undefined || reviewsList === null ? (
               <Box
                 sx={{
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  height: '150px',
                 }}
               >
-                <CircularProgress />
+                {reviewsList === undefined ? (
+                  <CircularProgress />
+                ) : (
+                  <>
+                    <ErrorOutlineIcon color="error" fontSize="large" />
+                    <Typography
+                      variant="body1"
+                      color="textSecondary"
+                      sx={{ marginTop: 1 }}
+                    >
+                      Failed to load reviews. Please reload the site and/or try
+                      again later.
+                    </Typography>
+                  </>
+                )}
               </Box>
-            ) : !reviewsList || reviewsList.length === 0 ? (
+            ) : reviewsList.length === 0 ? (
               <Typography variant="body1" color="text.secondary">
                 No reviews available.
               </Typography>
@@ -137,7 +155,7 @@ const ReviewBox: React.FC<{
                 />
               ))
             )}
-            {reviewsList !== null && (
+            {reviewsList && (
               <ReviewInput
                 endpoint={endpoint}
                 onUpdate={fetchReviews}

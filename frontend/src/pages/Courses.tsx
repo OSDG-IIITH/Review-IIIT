@@ -15,8 +15,8 @@ import ReviewBox from '../components/ReviewBox';
 import { CourseType, NameAndCode, ProfType } from '../types';
 
 const Courses: React.FC<{
-  courseList: CourseType[] | null;
-  profMap: Map<string, ProfType> | null;
+  courseList: CourseType[] | undefined;
+  profMap: Map<string, ProfType> | undefined;
 }> = ({ courseList, profMap }) => {
   const [semFilter, setSemFilter] = useState<string | null>(null);
   const [codeFilter, setCodeFilter] = useState<NameAndCode | null>(null);
@@ -44,7 +44,7 @@ const Courses: React.FC<{
     }
   };
 
-  if (courseList === null || profMap === null) {
+  if (courseList === undefined || profMap === undefined) {
     return <FullPageLoader />;
   }
 

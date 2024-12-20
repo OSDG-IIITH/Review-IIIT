@@ -11,7 +11,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { do_login, do_logout } from '../api';
 
-const Navbar: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
+const Navbar: React.FC<{ isLoggedIn: boolean | null }> = ({ isLoggedIn }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Adjust for small screens
   const location = useLocation();
@@ -86,7 +86,12 @@ const Navbar: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
             </Button>
           </Box>
         ) : (
-          <Button color="inherit" onClick={do_login} size="large">
+          <Button
+            color="inherit"
+            onClick={do_login}
+            size="large"
+            disabled={isLoggedIn === null}
+          >
             Login
           </Button>
         )}

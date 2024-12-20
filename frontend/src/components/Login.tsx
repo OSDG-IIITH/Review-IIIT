@@ -2,7 +2,9 @@ import React from 'react';
 import { Button, Box, Tooltip } from '@mui/material';
 import { do_login } from '../api';
 
-const LoginButton: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
+const LoginButton: React.FC<{ isLoggedIn: boolean | null }> = ({
+  isLoggedIn,
+}) => {
   // UI rendering
   return (
     <Box
@@ -22,7 +24,7 @@ const LoginButton: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
             color="secondary"
             onClick={do_login}
             sx={{ marginTop: 2, minWidth: 150, size: 'large' }}
-            disabled={isLoggedIn}
+            disabled={isLoggedIn === null || isLoggedIn}
           >
             Login
           </Button>

@@ -40,18 +40,10 @@ const ReviewInput: React.FC<{
     setIsSubmitting(true); // Indicate that the submission is in progress
 
     try {
-      await api.post(
-        endpoint,
-        {
-          rating: rating,
-          content: message,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      await api.post(endpoint, {
+        rating: rating,
+        content: message,
+      });
       setRating(0);
       setMessage('');
       await onUpdate();

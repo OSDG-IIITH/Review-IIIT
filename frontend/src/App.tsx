@@ -32,15 +32,21 @@ const App: React.FC = () => {
     return null; // Render nothing until the redirection happens
   }
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [courseList, setCourseList] = useState<CourseType[] | null>(null);
-  const [profList, setProfList] = useState<ProfType[] | null>(null);
+  /* If any state is undefined, it is in the loading/unused state. If any state
+   * is null, it is in the error state */
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null | undefined>(
+    undefined
+  );
+  const [courseList, setCourseList] = useState<CourseType[] | undefined>(
+    undefined
+  );
+  const [profList, setProfList] = useState<ProfType[] | undefined>(undefined);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  const logoutHandler = () => {
-    setIsLoggedIn(false);
-    setProfList(null);
-    setCourseList(null);
+  const logoutHandler = (has_errored: boolean = false) => {
+    setIsLoggedIn(has_errored ? null : false);
+    setProfList(undefined);
+    setCourseList(undefined);
   };
 
   useEffect(() => {
@@ -82,25 +88,21 @@ const App: React.FC = () => {
         }
       } catch (error) {
         console.error('Error fetching login status and details:', error);
+        logoutHandler(true);
       }
     };
 
     checkLoginAndFetchLists();
   }, []);
 
-  if (isLoggedIn === null) {
-    return (
-      <>
-        <FullPageLoader />
-        <ErrorDialog errorMessage={errMsg} />
-      </>
-    );
+  if (isLoggedIn === undefined) {
+    return <FullPageLoader />;
   }
 
   // make a Map out of profList data for efficient name lookup from email
   const profMap =
-    profList === null
-      ? null
+    profList === undefined
+      ? undefined
       : new Map(profList.map((prof) => [prof.email, prof]));
 
   return (
