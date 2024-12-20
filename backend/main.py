@@ -3,8 +3,9 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+import uvicorn
 
-from config import HOST_SUBPATH
+from config import HOST_PORT, HOST_PRIVATE, HOST_SUBPATH
 from routes.auth import router as auth_router
 from routes.courses import router as course_router
 from routes.members import router as members_router
@@ -59,3 +60,13 @@ async def diagnostics(request: Request):
 
 # serve frontend
 app.mount("/", StaticFiles(directory=FRONTEND_PATH, html=True), "frontend")
+
+if __name__ == "__main__":
+    # forwarded_allow_ips set to * so that the nginx headers are trusted
+    uvicorn.run(
+        "main:app",
+        host=HOST_PRIVATE,
+        port=HOST_PORT,
+        proxy_headers=True,
+        forwarded_allow_ips="*",
+    )

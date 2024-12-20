@@ -33,4 +33,4 @@ COPY --from=python_cache /venv /venv
 COPY --from=node_builder /frontend/dist /app/frontend/dist
 COPY backend backend
 WORKDIR /app/backend
-CMD uvicorn main:app --host "$HOST_PRIVATE" --port "$HOST_PORT"
+CMD ["python3", "main.py"]
