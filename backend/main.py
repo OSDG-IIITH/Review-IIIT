@@ -5,7 +5,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-from config import HOST_PORT, HOST_PRIVATE, VITE_SUBPATH
+from utils import ProxyFiles
+from config import HOST_PORT, HOST_PRIVATE, VITE_DEV_PORT, VITE_SUBPATH
 from routes.auth import router as auth_router
 from routes.courses import router as course_router
 from routes.members import router as members_router
@@ -59,7 +60,13 @@ async def diagnostics(request: Request):
 
 
 # serve frontend
-app.mount("/", StaticFiles(directory=FRONTEND_PATH, html=True), "frontend")
+try:
+    app.mount("/", StaticFiles(directory=FRONTEND_PATH, html=True), "frontend")
+except RuntimeError:
+    # we don't have a production build of the frontend, so assume that the
+    # frontend is running on its own server, and proxy to it
+    app.mount("/", ProxyFiles(VITE_DEV_PORT), "frontend")
+
 
 if __name__ == "__main__":
     # forwarded_allow_ips set to * so that the nginx headers are trusted

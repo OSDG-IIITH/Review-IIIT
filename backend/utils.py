@@ -1,8 +1,10 @@
 import base64
 from cryptography.fernet import Fernet, InvalidToken
 from fastapi import HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
+import httpx
 import jwt
+from starlette.types import Scope, Receive, Send
 
 from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET
 
@@ -91,3 +93,44 @@ def hash_decrypt(reviewer_id: str):
         return base64.b64encode(Fernet(secure_key).decrypt(reviewer_id)).decode()
     except InvalidToken:
         return None
+
+
+class ProxyFiles:
+    """
+    This is custom API that serves as a replacement for StaticFiles function
+    when a production build is not available and the frontend is running on its
+    own server.
+    Essentially this implements a basic HTTP proxy so that the backend can serve
+    the frontend even in dev mode, like it does in production mode.
+    """
+
+    def __init__(self, port: int, host: str = "127.0.0.1", http_scheme: str = "http"):
+        self.http_scheme = http_scheme
+        self.host = host
+        self.port = port
+
+    async def handle_http(self, scope: Scope, receive: Receive, send: Send):
+        request = Request(scope, receive, send)
+        async with httpx.AsyncClient() as client:
+            request_response = await client.request(
+                request.method.lower(),
+                f"{self.http_scheme}://{self.host}:{self.port}{request.url.path}",
+                headers=dict(request.headers),
+                params=request.query_params,
+                content=await request.body(),
+            )
+            return StreamingResponse(
+                request_response.aiter_bytes(),
+                status_code=request_response.status_code,
+                headers=dict(request_response.headers),
+            )
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        if scope["type"] == "http":
+            response = await self.handle_http(scope, receive, send)
+        else:
+            response = JSONResponse(
+                {"error": f"{scope['type']} connections are not supported"},
+                status_code=400,
+            )
+        await response(scope, receive, send)

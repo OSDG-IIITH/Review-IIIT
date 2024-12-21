@@ -1,18 +1,29 @@
-import { defineConfig } from 'vite';
+import { defineConfig, ViteDevServer } from 'vite';
 import react from '@vitejs/plugin-react';
+
+const logger = () => {
+  return {
+    name: 'log-paths',
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req, res, next) => {
+        console.log(`[vite] ${req.method} ${req.url}`);
+        next();
+      });
+    },
+  };
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: process.env.VITE_SUBPATH,
-  plugins: [react()],
-  preview: {
-    port: 80,
-    strictPort: true,
-  },
+  plugins: [react(), logger()],
   server: {
-    port: 80,
+    port: Number(process.env.VITE_DEV_PORT),
     strictPort: true,
-    host: true,
-    origin: 'http://0.0.0.0:80',
+    // Force a direct HMR connection instead of proxying it via the backend
+    // in the dev environment
+    hmr: {
+      port: Number(process.env.VITE_DEV_PORT),
+    },
   },
 });
