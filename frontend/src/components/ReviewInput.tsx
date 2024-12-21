@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { api } from '../api';
-import { MSG_MAX_LEN } from '../constants';
+import { VITE_MSG_MAX_LEN } from '../constants';
 import { FetchReviewsCallback } from '../types';
 
 const ReviewInput: React.FC<{
@@ -69,7 +69,7 @@ const ReviewInput: React.FC<{
           sx={{ marginBottom: 2 }}
         />
         <Typography variant="body2" color="text.secondary">
-          {message.length} / {MSG_MAX_LEN} characters
+          {message.length} / {VITE_MSG_MAX_LEN} characters
         </Typography>
         <TextField
           label="Your Review"
@@ -81,7 +81,7 @@ const ReviewInput: React.FC<{
           fullWidth
           sx={{ marginTop: 1, marginBottom: 2 }}
           slotProps={{
-            htmlInput: { maxLength: MSG_MAX_LEN }, // Character limit set here
+            htmlInput: { maxLength: VITE_MSG_MAX_LEN }, // Character limit set here
           }}
         />
         <Tooltip

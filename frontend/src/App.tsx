@@ -21,13 +21,13 @@ import theme from './theme';
 
 import { api, set_logout_callback, set_errmsg_callback } from './api';
 
-import { HOST_SUBPATH } from './constants';
+import { VITE_SUBPATH } from './constants';
 import { CourseType, ProfType } from './types';
 
 const App: React.FC = () => {
   // Check if the current path is outside the subpath
-  if (!window.location.pathname.startsWith(HOST_SUBPATH)) {
-    const normalizedPath = `${HOST_SUBPATH}${window.location.pathname}`;
+  if (!window.location.pathname.startsWith(VITE_SUBPATH)) {
+    const normalizedPath = `${VITE_SUBPATH}${window.location.pathname}`;
     window.location.replace(normalizedPath.replace(/\/{2,}/g, '/')); // Ensure no double slashes
     return null; // Render nothing until the redirection happens
   }
@@ -108,7 +108,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router basename={HOST_SUBPATH}>
+      <Router basename={VITE_SUBPATH}>
         <Box
           sx={{
             display: 'flex',

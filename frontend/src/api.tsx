@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-import { HOST_SUBPATH } from './constants';
+import { VITE_SUBPATH } from './constants';
 import { ErrorMessageCallback, LogoutCallback } from './types';
 
-const API_PREFIX = `${HOST_SUBPATH}api`;
+const API_PREFIX = `${VITE_SUBPATH}api`;
 
 const api = axios.create({
   baseURL: API_PREFIX,

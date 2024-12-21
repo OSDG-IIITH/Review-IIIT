@@ -5,12 +5,12 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
-from config import HOST_PORT, HOST_PRIVATE, HOST_SUBPATH
+from config import HOST_PORT, HOST_PRIVATE, VITE_SUBPATH
 from routes.auth import router as auth_router
 from routes.courses import router as course_router
 from routes.members import router as members_router
 
-app = FastAPI(title="Review-IIIT", root_path=HOST_SUBPATH)
+app = FastAPI(title="Review-IIIT", root_path=VITE_SUBPATH)
 
 app.include_router(auth_router, prefix="/api", tags=["Authentication"])
 app.include_router(course_router, prefix="/api/courses", tags=["Course Management"])

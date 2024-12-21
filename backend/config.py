@@ -3,16 +3,8 @@ import os
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
-HOST_PROTOCOL = os.environ["HOST_PROTOCOL"]
-HOST_SECURE = HOST_PROTOCOL == "https"
 HOST_PRIVATE = os.environ["HOST_PRIVATE"]
-HOST_PUBLIC = os.environ["HOST_PUBLIC"] if os.getenv("HOST_PUBLIC") else HOST_PRIVATE
-HOST_SUBPATH = os.environ.get("HOST_SUBPATH", "")
-
-HOST_PORT = int(os.environ.get("HOST_PORT", 80))
-_HOST_PORT_SUFFIX = f":{HOST_PORT}" if HOST_PORT != 80 else ""
-
-HOST_BASE_URL = f"{HOST_PROTOCOL}://{HOST_PUBLIC}{_HOST_PORT_SUFFIX}{HOST_SUBPATH}"
+HOST_PORT = int(os.environ.get("HOST_PORT") or 80)
 
 BACKEND_MONGO_DATABASE = os.environ["BACKEND_MONGO_DB"]
 BACKEND_MONGO_URI = os.environ["BACKEND_MONGO_URI"]
@@ -26,7 +18,8 @@ BACKEND_ADMIN_UIDS = {
     i for i in os.environ.get("BACKEND_ADMIN_UIDS", "").split(",") if i
 }
 
-MSG_MAX_LEN = int(os.environ["MSG_MAX_LEN"])
+VITE_SUBPATH = os.environ.get("VITE_SUBPATH", "")
+VITE_MSG_MAX_LEN = int(os.environ["VITE_MSG_MAX_LEN"])
 
 mongo_client = AsyncIOMotorClient(
     f"{BACKEND_MONGO_URI}/{BACKEND_MONGO_DATABASE}?retryWrites=true&w=majority"

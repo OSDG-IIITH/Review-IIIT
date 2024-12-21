@@ -4,7 +4,7 @@ from fastapi import HTTPException, Request
 from fastapi.responses import RedirectResponse
 import jwt
 
-from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET, HOST_SECURE
+from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET
 
 
 secure_key = Fernet.generate_key()
@@ -51,7 +51,7 @@ def has_auth_id(request: Request) -> bool:
         return False
 
 
-def set_auth_id(response: RedirectResponse, uid: str | None):
+def set_auth_id(response: RedirectResponse, uid: str | None, is_secure: bool):
     """
     This function is used to set the auth id (hash). If the uid argument is
     None, it deletes the auth cookie, otherwise it sets it to a jwt encoded
@@ -62,7 +62,7 @@ def set_auth_id(response: RedirectResponse, uid: str | None):
             "auth_hash",
             jwt.encode({"_id": uid}, BACKEND_JWT_SECRET, algorithm="HS256"),
             httponly=True,
-            secure=HOST_SECURE,
+            secure=is_secure,
             samesite="strict",
             max_age=864000,  # 10 days
         )
@@ -70,7 +70,7 @@ def set_auth_id(response: RedirectResponse, uid: str | None):
         response.delete_cookie(
             "auth_hash",
             httponly=True,
-            secure=HOST_SECURE,
+            secure=is_secure,
             samesite="strict",
         )
 

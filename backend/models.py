@@ -10,7 +10,7 @@ from pydantic import (
     model_validator,
 )
 
-from config import MSG_MAX_LEN
+from config import VITE_MSG_MAX_LEN
 
 # List of valid semesters. M for monsoon and S for spring. The number after it
 # represents the year
@@ -36,7 +36,7 @@ class Review(BaseModel):
     """
 
     rating: Literal[1, 2, 3, 4, 5]
-    content: str = Field(..., min_length=1, max_length=MSG_MAX_LEN)
+    content: str = Field(..., min_length=1, max_length=VITE_MSG_MAX_LEN)
     dtime: AwareDatetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Model-level validator that runs before individual field validation

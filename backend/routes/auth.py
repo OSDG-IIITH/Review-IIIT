@@ -8,17 +8,9 @@ from routes.members import student_hash
 from utils import has_auth_id, set_auth_id
 from models import Student
 
-from config import logger, BACKEND_CAS_SERVER_URL, HOST_BASE_URL
+from config import logger, BACKEND_CAS_SERVER_URL
 
 router = APIRouter()
-
-
-# instantiate CAS client
-cas_client = cas.CASClient(
-    version=2,
-    service_url=f"{HOST_BASE_URL}/api/login",
-    server_url=BACKEND_CAS_SERVER_URL,
-)
 
 
 @router.get("/login")
@@ -29,7 +21,12 @@ async def login(request: Request):
     """
     if has_auth_id(request):
         # already has login cookie set, no need for CAS relogin
-        return RedirectResponse(HOST_BASE_URL)
+        return RedirectResponse(request.url_for("frontend", path="/"))
+
+    cas_client = cas.CASClientV3(
+        service_url=request.url_for("login"),
+        server_url=BACKEND_CAS_SERVER_URL,
+    )
 
     ticket = request.query_params.get("ticket")
     if not ticket:
@@ -57,9 +54,11 @@ async def login(request: Request):
 
     # send JWT as cookie
     response = RedirectResponse(
-        HOST_BASE_URL if student_uid else cas_client.get_logout_url()
+        request.url_for("frontend", path="/")
+        if student_uid
+        else cas_client.get_logout_url()
     )
-    set_auth_id(response, student_uid)
+    set_auth_id(response, student_uid, request.url.is_secure)
     return response
 
 
@@ -74,13 +73,18 @@ async def has_login(request: Request):
 
 
 @router.get("/logout")
-async def logout():
+async def logout(request: Request):
     """
     This is the logout endpoint that clears the authentication cookie and does
     a CAS logout.
     """
 
+    cas_client = cas.CASClientV3(
+        service_url=request.url_for("login"),
+        server_url=BACKEND_CAS_SERVER_URL,
+    )
+
     # do CAS logout and clear cookie
     response = RedirectResponse(cas_client.get_logout_url())
-    set_auth_id(response, None)
+    set_auth_id(response, None, request.url.is_secure)
     return response
