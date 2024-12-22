@@ -66,10 +66,12 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
       </Box>
       {reviewProf ? (
         <ReviewBox
-          title={`${reviewProf.name} <${reviewProf.email}>`}
+          title={reviewProf.name}
           endpoint={`/members/reviews/${reviewProf.email}`}
           initExpanded={true}
-        />
+        >
+          {reviewProf.email}
+        </ReviewBox>
       ) : (
         <Typography
           variant="body2"

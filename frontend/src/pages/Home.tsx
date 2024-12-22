@@ -8,10 +8,15 @@ const Home: React.FC<{ isLoggedIn: boolean | null }> = ({ isLoggedIn }) => {
       <Typography variant="h3" gutterBottom align="center" color="primary">
         🎓 Welcome to ReviewIIITH 👋
       </Typography>
-      <Typography variant="h6" gutterBottom align="center" sx={{ mb: 4 }}>
+      <Typography variant="h5" gutterBottom align="center" sx={{ mb: 4 }}>
         A reviews portal by students, for students 🧑‍🎓
       </Typography>
-      <Typography variant="h6" align="center" paragraph color="text.secondary">
+      <Typography
+        variant="h6"
+        gutterBottom
+        align="center"
+        color="text.secondary"
+      >
         Ever wished you had the inside scoop on a course before signing up for
         it? Confused on what research advisor to pick? 🤔 That&apos;s where this
         anonymous review portal comes in. Think of it as your go-to place for
@@ -20,7 +25,7 @@ const Home: React.FC<{ isLoggedIn: boolean | null }> = ({ isLoggedIn }) => {
         on things like how clear their lectures are, how tough the workload is,
         or whether the grading feels fair. 📝
       </Typography>
-      <Typography variant="h6" align="center" paragraph color="text.secondary">
+      <Typography variant="h6" align="center" color="text.secondary">
         The best part? 🌟 It&apos;s totally anonymous, so you can keep it real
         without worrying about any awkward run-ins. And it&apos;s super simple
         to use - just search by course or professor and see what others are

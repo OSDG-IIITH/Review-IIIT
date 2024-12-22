@@ -54,7 +54,7 @@ const Review: React.FC<{
       <Card
         variant="outlined"
         sx={{
-          margin: 2,
+          my: 2,
           backgroundColor: review.is_reviewer
             ? theme.palette.action.hover
             : theme.palette.background.paper,
@@ -99,7 +99,7 @@ const Review: React.FC<{
             </Typography>
           </Box>
           <Typography
-            variant="body1"
+            variant="body2"
             sx={{ marginTop: 1, whiteSpace: 'pre-line' }}
           >
             {review.content.replace(/\n{3,}/g, '\n\n')}

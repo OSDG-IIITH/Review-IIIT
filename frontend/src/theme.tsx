@@ -1,6 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+  spacing: 6,
   palette: {
     mode: 'dark',
     primary: {
@@ -20,9 +21,17 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Roboto', 'Arial', sans-serif",
-    h1: {
+    h3: {
       fontSize: '3rem',
-      fontWeight: 700,
+    },
+    h4: {
+      fontSize: '2rem',
+    },
+    h5: {
+      fontSize: '1.4rem',
+    },
+    h6: {
+      fontSize: '1.2rem',
     },
     h2: {
       fontSize: '2.5rem',

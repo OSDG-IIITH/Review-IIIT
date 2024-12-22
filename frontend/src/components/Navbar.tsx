@@ -27,6 +27,7 @@ const Navbar: React.FC<{ isLoggedIn: boolean | null }> = ({ isLoggedIn }) => {
           justifyContent: isSmallScreen ? 'center' : 'space-between',
           alignItems: 'center',
           textAlign: isSmallScreen ? 'center' : 'left',
+          py: isSmallScreen ? 1 : 0,
         }}
       >
         <Typography
@@ -41,7 +42,7 @@ const Navbar: React.FC<{ isLoggedIn: boolean | null }> = ({ isLoggedIn }) => {
           📝 ReviewIIITH
         </Typography>
         {isLoggedIn ? (
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
             <Button
               color="inherit"
               component={Link}

@@ -19,7 +19,7 @@ const Credits: React.FC = () => {
         <Typography variant="h4" gutterBottom color="secondary">
           Idea Contributors
         </Typography>
-        <Typography paragraph color="text.secondary">
+        <Typography color="text.secondary">
           This project was inspired by some projects submitted during HackIIIT
           2024. We would like to acknowledge the following teams whose projects
           have inspired this portal:
@@ -44,7 +44,7 @@ const Credits: React.FC = () => {
         <Typography variant="h4" gutterBottom color="secondary">
           Code Contributors
         </Typography>
-        <Typography paragraph color="text.secondary">
+        <Typography color="text.secondary">
           The core implementation and development of this project were carried
           out by:
         </Typography>
@@ -59,7 +59,7 @@ const Credits: React.FC = () => {
             <ListItemText primary="Ankith Pai" />
           </ListItem>
         </List>
-        <Typography paragraph color="text.secondary">
+        <Typography color="text.secondary">
           We look forward to adding more contributors to this list as the
           project evolves!
         </Typography>
@@ -69,12 +69,12 @@ const Credits: React.FC = () => {
         <Typography variant="h4" gutterBottom color="secondary">
           Users and Beta Testers
         </Typography>
-        <Typography paragraph color="text.secondary">
+        <Typography color="text.secondary">
           A big thank you to all our beta testers who provided invaluable
           feedback and bug reports. Your efforts have greatly improved the
           quality of this platform.
         </Typography>
-        <Typography paragraph color="text.secondary">
+        <Typography color="text.secondary">
           Finally, to all our users: your feedback is what makes this platform
           better for everyone. Thank you for sharing your thoughts and reviews!
         </Typography>
