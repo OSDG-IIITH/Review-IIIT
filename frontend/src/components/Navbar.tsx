@@ -8,7 +8,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import { do_login, do_logout } from '../api';
 
 const Navbar: React.FC<{ isLoggedIn: boolean | null }> = ({ isLoggedIn }) => {

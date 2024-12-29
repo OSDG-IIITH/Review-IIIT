@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 
 import Home from './pages/Home';
@@ -16,7 +11,6 @@ import Footer from './components/Footer';
 import FullPageLoader from './components/FullPageLoader';
 import ErrorDialog from './components/ErrorDialog';
 
-import './App.css'; // Import the global styles
 import theme from './theme';
 
 import { api, set_logout_callback, set_errmsg_callback } from './api';
