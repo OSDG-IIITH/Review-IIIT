@@ -4,6 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 
+from routes.routes_helpers import get_list_with_metadata
 from config import db
 from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
 from models import Prof, Review, ReviewBackend, ReviewFrontend, Student, VoteAndReviewID
@@ -21,9 +22,7 @@ async def prof_list():
     """
     return [
         Prof(**user).model_dump()
-        async for user in profs_collection.find(
-            projection={"_id": False, "reviews": False}
-        )
+        async for user in get_list_with_metadata(profs_collection)
     ]
 
 

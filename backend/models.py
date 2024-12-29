@@ -80,6 +80,25 @@ class ReviewFrontend(Review):
     votes_status: Vote
 
 
+class ReviewsMetadata(BaseModel):
+    """
+    Base class for storing some metadata (aggregate statistics) of reviews
+    """
+
+    num_reviews: int
+    newest_dtime: AwareDatetime | None
+    avg_rating: float | None
+
+    # Model-level validator that runs before individual field validation
+    @model_validator(mode="before")
+    def convert_naive_to_aware(cls, values):
+        if "newest_dtime" in values:
+            dtime = values["newest_dtime"]
+            if dtime and dtime.tzinfo is None:
+                values["newest_dtime"] = dtime.replace(tzinfo=timezone.utc)
+        return values
+
+
 class Member(BaseModel):
     """
     Base class for representing a Member, can be a Student or Prof
@@ -102,6 +121,8 @@ class Prof(Member):
     Class for storing a Prof
     """
 
+    reviews_metadata: ReviewsMetadata
+
 
 class Course(BaseModel):
     """
@@ -113,6 +134,7 @@ class Course(BaseModel):
     sem: Sem
     name: str = Field(..., min_length=1)
     profs: list[EmailStr]  # list of prof emails
+    reviews_metadata: ReviewsMetadata
 
 
 class VoteAndReviewID(BaseModel):

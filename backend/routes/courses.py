@@ -2,6 +2,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 
+from routes.routes_helpers import get_list_with_metadata
 from routes.members import prof_exists
 from config import db
 from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
@@ -21,32 +22,14 @@ course_collection = db["courses"]
 
 
 @router.get("/")
-async def course_list(
-    course_sem_filter: Sem | None = None,
-    course_code_filter: CourseCode | None = None,
-    prof_filter: EmailStr | None = None,
-):
+async def course_list():
     """
     List all courses.
     This does not return the reviews attribute, that must be queried individually.
-    Can optionally pass filters for:
-    - course semester
-    - course code
-    - prof
     """
-    filter_op: dict[str, Any] = {}
-    if course_sem_filter:
-        filter_op |= {"sem": course_sem_filter}
-    if course_code_filter:
-        filter_op |= {"code": course_code_filter}
-    if prof_filter:
-        filter_op |= {"profs": {"$all": [prof_filter]}}
-
     return [
         Course(**course).model_dump()
-        async for course in course_collection.find(
-            filter_op, projection={"_id": False, "reviews": False}
-        )
+        async for course in get_list_with_metadata(course_collection)
     ]
 
 
@@ -146,8 +129,7 @@ async def course_reviews_delete(
     If the user hasn't posted a review, no action will be taken.
     """
     await course_collection.update_one(
-        {"sem": sem, "code": code},
-        {"$unset": {f"reviews.{auth_id}": ""}}
+        {"sem": sem, "code": code}, {"$unset": {f"reviews.{auth_id}": ""}}
     )
 
 

@@ -13,6 +13,20 @@ import FullPageLoader from '../components/FullPageLoader';
 
 import ReviewBox from '../components/ReviewBox';
 import { CourseType, NameAndCode, ProfType } from '../types';
+import SortBox from '../components/SortBox';
+import { semCompare, reviewableSort } from '../sortutils';
+
+function getProfStub(email: string): ProfType {
+  return {
+    name: email,
+    email: email,
+    reviews_metadata: {
+      num_reviews: 0,
+      newest_dtime: null,
+      avg_rating: null,
+    },
+  };
+}
 
 const Courses: React.FC<{
   courseList: CourseType[] | undefined;
@@ -21,14 +35,12 @@ const Courses: React.FC<{
   const [semFilter, setSemFilter] = useState<string | null>(null);
   const [codeFilter, setCodeFilter] = useState<NameAndCode | null>(null);
   const [profFilter, setProfFilter] = useState<ProfType | null>(null);
-  const [filteredCourses, setFilteredCourses] = useState<CourseType[] | null>(
-    null
-  );
+  const [filteredCourses, setFilteredCourses] = useState<CourseType[]>([]);
 
   const applyFilters = () => {
     if (!semFilter && !codeFilter && !profFilter) {
       /* No filters chosen */
-      setFilteredCourses(null);
+      setFilteredCourses([]);
       return;
     }
     if (courseList) {
@@ -40,7 +52,7 @@ const Courses: React.FC<{
           : true;
         return matchesSem && matchesCode && matchesProf;
       });
-      setFilteredCourses(filtered);
+      setFilteredCourses(reviewableSort(filtered));
     }
   };
 
@@ -58,7 +70,7 @@ const Courses: React.FC<{
         )
         .map((course) => course.sem)
     )
-  );
+  ).sort(semCompare);
 
   const seen = new Set();
   const codeOptions = courseList
@@ -90,11 +102,17 @@ const Courses: React.FC<{
         .flatMap((course) => course.profs)
     )
   )
-    .map((email) => profMap.get(email) || { name: email, email: email })
+    .map((email) => profMap.get(email) || getProfStub(email))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <Container sx={{ mt: 3, mb: 3, color: 'text.primary' }}>
+      <Typography variant="h4" color="primary" gutterBottom align="center">
+        Course Reviews
+      </Typography>
+      <Typography variant="h5" color="secondary" gutterBottom>
+        Filters
+      </Typography>
       <Box
         display="flex"
         alignItems="center"
@@ -160,42 +178,46 @@ const Courses: React.FC<{
           </span>
         </Tooltip>
       </Box>
-      {filteredCourses ? (
-        filteredCourses.length <= 0 ? (
-          <Typography
-            variant="body2"
-            color="text.primary"
-            sx={{ fontStyle: 'italic' }}
+      <Typography
+        variant="body2"
+        color="text.primary"
+        sx={{ mb: 3, fontStyle: 'italic' }}
+      >
+        All filters are optional but you have to set atleast one of the three.
+      </Typography>
+      <SortBox
+        sortableData={filteredCourses}
+        setSortableData={setFilteredCourses}
+      />
+      <Typography variant="h5" color="secondary" gutterBottom>
+        Reviews
+      </Typography>
+      {filteredCourses.length > 0 ? (
+        filteredCourses.map((course, index) => (
+          <ReviewBox
+            key={index}
+            title={`[${course.code}] ${course.name} (${course.sem})`}
+            endpoint={`/courses/reviews/${course.sem}/${course.code}`}
+            initExpanded={filteredCourses.length < 10}
           >
-            No match found for given filters.
-          </Typography>
-        ) : (
-          filteredCourses.map((course, index) => (
-            <ReviewBox
-              key={index}
-              title={`[${course.code}] ${course.name} (${course.sem})`}
-              endpoint={`/courses/reviews/${course.sem}/${course.code}`}
-              initExpanded={filteredCourses.length < 10}
-            >
-              {course.profs.map((email) => {
-                const prof = profMap.get(email);
-                return prof ? (
-                  <Typography variant="body1" color="text.primary" key={email}>
-                    {prof.name} &lt;{email}&gt;
-                  </Typography>
-                ) : null;
-              })}
-            </ReviewBox>
-          ))
-        )
+            {course.profs.map((email) => {
+              const prof = profMap.get(email);
+              return prof ? (
+                <Typography variant="body1" color="text.primary" key={email}>
+                  {prof.name} &lt;{email}&gt;
+                </Typography>
+              ) : null;
+            })}
+          </ReviewBox>
+        ))
       ) : (
         <Typography
           variant="body2"
           color="text.primary"
           sx={{ fontStyle: 'italic' }}
         >
-          All filters are optional but you have to set atleast one of the three.
-          Hit search after choosing your filter(s).
+          No matches found, make sure to hit the search button after picking the
+          filter(s).
         </Typography>
       )}
     </Container>

@@ -14,9 +14,16 @@ interface ReviewType {
   votes_status: Vote;
 }
 
+interface ReviewsMetadata {
+  num_reviews: number;
+  newest_dtime: string | null;
+  avg_rating: number | null;
+}
+
 interface ProfType {
   name: string;
   email: string;
+  reviews_metadata: ReviewsMetadata;
 }
 
 interface CourseType {
@@ -24,12 +31,17 @@ interface CourseType {
   code: string;
   sem: string;
   profs: string[];
+  reviews_metadata: ReviewsMetadata;
 }
 
 interface NameAndCode {
   name: string;
   code: string;
 }
+
+type SortType = keyof ReviewsMetadata;
+type ReviewableType = CourseType | ProfType;
+
 export type {
   ErrorMessageCallback,
   LogoutCallback,
@@ -39,4 +51,6 @@ export type {
   ProfType,
   CourseType,
   NameAndCode,
+  SortType,
+  ReviewableType,
 };

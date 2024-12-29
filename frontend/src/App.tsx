@@ -58,24 +58,6 @@ const App: React.FC = () => {
           );
 
           const response_courses = await api.get<CourseType[]>('/courses/');
-          response_courses.data.sort((a, b) => {
-            // Extract year and term (S/M) for comparison
-            const [termA, yearA] = [a.sem[0], parseInt(a.sem.slice(1))];
-            const [termB, yearB] = [b.sem[0], parseInt(b.sem.slice(1))];
-
-            // Compare by year first (descending order)
-            if (yearA !== yearB) {
-              return yearB - yearA;
-            }
-
-            // If the year is the same, compare by term (M before S)
-            if (termA !== termB) {
-              return termA === 'M' ? -1 : 1;
-            }
-
-            // If the semester is the same, compare by name (ascending order)
-            return a.name.localeCompare(b.name);
-          });
           setCourseList(response_courses.data);
         } else {
           logoutHandler();
