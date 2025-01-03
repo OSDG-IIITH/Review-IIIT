@@ -101,7 +101,8 @@ class ReviewsMetadata(BaseModel):
 
 class Member(BaseModel):
     """
-    Base class for representing a Member, can be a Student or Prof
+    Base class for representing a Member, can be a Student or Prof.
+    This is how Prof instances are stored in the db.
     """
 
     name: str = Field(..., min_length=1)
@@ -118,7 +119,7 @@ class Student(Member):
 
 class Prof(Member):
     """
-    Class for storing a Prof
+    Class for the frontend representation of a Prof, holds extra metadata.
     """
 
     reviews_metadata: ReviewsMetadata
@@ -128,12 +129,20 @@ class Course(BaseModel):
     """
     Represents a Course.
     The code-sem combination is the ID for every course.
+    This is how the course structure is stored in the db.
     """
 
     code: CourseCode
     sem: Sem
     name: str = Field(..., min_length=1)
     profs: list[EmailStr]  # list of prof emails
+
+
+class CourseFrontend(Course):
+    """
+    The frontend representation of a Course instance, holds extra metadata.
+    """
+
     reviews_metadata: ReviewsMetadata
 
 

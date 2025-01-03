@@ -8,6 +8,7 @@ from config import db
 from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
 from models import (
     Course,
+    CourseFrontend,
     Review,
     ReviewBackend,
     ReviewFrontend,
@@ -28,7 +29,7 @@ async def course_list():
     This does not return the reviews attribute, that must be queried individually.
     """
     return [
-        Course(**course).model_dump()
+        CourseFrontend(**course).model_dump()
         async for course in get_list_with_metadata(course_collection)
     ]
 

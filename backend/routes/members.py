@@ -7,7 +7,15 @@ from pydantic import EmailStr
 from routes.routes_helpers import get_list_with_metadata
 from config import db
 from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
-from models import Prof, Review, ReviewBackend, ReviewFrontend, Student, VoteAndReviewID
+from models import (
+    Member,
+    Prof,
+    Review,
+    ReviewBackend,
+    ReviewFrontend,
+    Student,
+    VoteAndReviewID,
+)
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -37,7 +45,7 @@ async def prof_exists(email: EmailStr):
 
 
 @router.post("/", dependencies=[Depends(get_auth_id_admin)])
-async def prof_post(profs: list[Prof]):
+async def prof_post(profs: list[Member]):
     """
     Helper method to update a list of Profs in the records. This is an admin
     endpoint and can't be used by regular users.
