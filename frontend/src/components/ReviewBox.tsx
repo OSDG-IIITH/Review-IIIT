@@ -68,7 +68,7 @@ const ReviewBox: React.FC<{
         setReviewsList(undefined);
       }
     }
-  }, [endpoint]);
+  }, [endpoint, initExpanded]);
 
   useEffect(() => {
     if (isExpanded) {

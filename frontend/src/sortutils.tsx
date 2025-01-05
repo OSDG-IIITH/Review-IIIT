@@ -45,9 +45,9 @@ const reviewableSort = <T extends ReviewableType>(
   sortBy: SortType | '' = '',
   sortByAscending: boolean = false
 ) => {
-  return [...sortableData].sort((a, b) => {
+  const reviewableCompare = <T extends ReviewableType>(a: T, b: T) => {
     if (!sortBy) {
-      return reviewableDefaultCompare(a, b);
+      return 0;
     }
 
     const left = a.reviews_metadata[sortBy];
@@ -74,7 +74,13 @@ const reviewableSort = <T extends ReviewableType>(
     } else {
       return 0;
     }
-  });
+  };
+
+  // First compare with reviewableCompare (uses sort parameters), and if that
+  // returns 0 then use the default comparator (sorts by name/sem).
+  return [...sortableData].sort(
+    (a, b) => reviewableCompare(a, b) || reviewableDefaultCompare(a, b)
+  );
 };
 
 export {

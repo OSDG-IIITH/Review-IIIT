@@ -47,7 +47,12 @@ const SortBox = <T extends ReviewableType>({
     setSortByAscending(false);
   }, [reviewableDefaultSortString(sortableData)]);
 
-  const disableForSize = sortableData === null || sortableData.length <= 1;
+  const disableForSize =
+    sortableData === null ||
+    sortableData.reduce(
+      (count, data) => count + (data.reviews_metadata.num_reviews > 0 ? 1 : 0),
+      0
+    ) <= 1;
   return (
     <>
       <Typography variant="h5" color="secondary" gutterBottom>
