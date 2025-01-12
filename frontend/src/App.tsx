@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 
@@ -71,15 +71,18 @@ const App: React.FC = () => {
     checkLoginAndFetchLists();
   }, []);
 
+  // make a Map out of profList data for efficient name lookup from email
+  const profMap = useMemo(
+    () =>
+      profList === undefined
+        ? undefined
+        : new Map(profList.map((prof) => [prof.email, prof])),
+    [profList]
+  );
+
   if (isLoggedIn === undefined) {
     return <FullPageLoader />;
   }
-
-  // make a Map out of profList data for efficient name lookup from email
-  const profMap =
-    profList === undefined
-      ? undefined
-      : new Map(profList.map((prof) => [prof.email, prof]));
 
   return (
     <ThemeProvider theme={theme}>

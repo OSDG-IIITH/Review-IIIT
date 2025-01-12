@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ReviewableType, SortType } from '../types';
 import {
   Typography,
@@ -42,17 +42,25 @@ const SortBox = <T extends ReviewableType>({
   }, [sortBy, sortByAscending]);
 
   // Reset sort criteria to defaults if data changes in parent
+  const sortableDataString = useMemo(
+    () => reviewableDefaultSortString(sortableData),
+    [sortableData]
+  );
   useEffect(() => {
     setSortBy('');
     setSortByAscending(false);
-  }, [reviewableDefaultSortString(sortableData)]);
+  }, [sortableDataString]);
 
-  const disableForSize =
-    sortableData === null ||
-    sortableData.reduce(
-      (count, data) => count + (data.reviews_metadata.num_reviews > 0 ? 1 : 0),
-      0
-    ) <= 1;
+  const disableForSize = useMemo(
+    () =>
+      sortableData === null ||
+      sortableData.reduce(
+        (count, data) =>
+          count + (data.reviews_metadata.num_reviews > 0 ? 1 : 0),
+        0
+      ) <= 1,
+    [sortableDataString]
+  );
   return (
     <>
       <Typography variant="h5" color="secondary" gutterBottom>

@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
       }}
     >
       <Typography variant="body2">
-        © 2024 OSDG. All rights reserved.{' '}
+        © 2024-2025 OSDG. All rights reserved.{' '}
         <Link component={RouterLink} to="/credits" color="inherit">
           Credits
         </Link>{' '}

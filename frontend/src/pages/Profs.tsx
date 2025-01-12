@@ -31,6 +31,9 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
     setDisplayProfs(profList);
   }
 
+  // it is enough to check length to assert full equality as selectedProfs is a
+  // guaranteed subset of profList.
+  const isFullSelection = selectedProfs.length === profList.length;
   return (
     <Container sx={{ mt: 3, mb: 3, color: 'text.primary' }}>
       <Typography variant="h4" color="primary" gutterBottom align="center">
@@ -64,7 +67,7 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
         />
         <Tooltip
           title={
-            reviewableEqual(selectedProfs, profList)
+            isFullSelection
               ? 'Clear filter and display all professors'
               : 'Apply filter and display only selected professors'
           }
@@ -78,9 +81,7 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
               size="small"
               sx={{ minWidth: '95px' }}
             >
-              {reviewableEqual(selectedProfs, profList)
-                ? 'Clear filter'
-                : 'Apply filter'}
+              {isFullSelection ? 'Clear filter' : 'Apply filter'}
             </Button>
           </span>
         </Tooltip>
