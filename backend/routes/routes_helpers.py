@@ -25,8 +25,8 @@ METADATA_PIPELINE_PROJECT = {
                     "input": REVIEWS_TO_LIST_STEP,
                     "as": "entry",
                     "in": "$$entry.v.rating",
-                }
-            }
+                },
+            },
         },
     },
 }

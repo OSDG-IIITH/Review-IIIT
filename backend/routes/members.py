@@ -1,12 +1,11 @@
 import base64
 import hashlib
-from typing import Any
+from typing import Annotated, Any
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import EmailStr
 
-from routes.routes_helpers import get_list_with_metadata
 from config import db
-from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
 from models import (
     Member,
     Prof,
@@ -16,6 +15,8 @@ from models import (
     Student,
     VoteAndReviewID,
 )
+from routes.routes_helpers import get_list_with_metadata
+from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -61,13 +62,17 @@ async def prof_post(profs: list[Member]):
 
 
 @router.get("/reviews/{email}")
-async def prof_reviews_get(email: EmailStr, auth_id: str = Depends(get_auth_id)):
+async def prof_reviews_get(
+    email: EmailStr,
+    auth_id: Annotated[str, Depends(get_auth_id)],
+):
     """
     Helper to return all reviews under a given Prof email.
     This function returns None if the prof does not exist
     """
     prof_reviews: dict[str, Any] = await profs_collection.find_one(
-        {"email": email}, ["reviews"]
+        {"email": email},
+        ["reviews"],
     )
     if not prof_reviews:
         return None
@@ -92,7 +97,9 @@ async def prof_reviews_get(email: EmailStr, auth_id: str = Depends(get_auth_id))
 
 @router.post("/reviews/{email}")
 async def prof_reviews_post(
-    email: EmailStr, review: Review, auth_id: str = Depends(get_auth_id)
+    email: EmailStr,
+    review: Review,
+    auth_id: Annotated[str, Depends(get_auth_id)],
 ):
     """
     Helper to post a single review on a Prof.
@@ -106,30 +113,34 @@ async def prof_reviews_post(
                 "$set": {
                     # do merge objects to keep old votes intact
                     f"reviews.{auth_id}": {
-                        "$mergeObjects": [f"$reviews.{auth_id}", review.model_dump()]
-                    }
-                }
-            }
+                        "$mergeObjects": [f"$reviews.{auth_id}", review.model_dump()],
+                    },
+                },
+            },
         ],
     )
 
 
 @router.delete("/reviews/{email}")
-async def prof_reviews_delete(email: EmailStr, auth_id: str = Depends(get_auth_id)):
+async def prof_reviews_delete(
+    email: EmailStr,
+    auth_id: Annotated[str, Depends(get_auth_id)],
+):
     """
     Helper to delete a review posted by the authenticated user on a professor.
     If the user hasn't posted a review, no action will be taken.
     """
     await profs_collection.update_one(
-        {"email": email}, {"$unset": {f"reviews.{auth_id}": ""}}
+        {"email": email},
+        {"$unset": {f"reviews.{auth_id}": ""}},
     )
 
 
 @router.post("/reviews/{email}/votes")
-async def course_reviews_votes_post(
+async def prof_reviews_votes_post(
     email: EmailStr,
     post_body: VoteAndReviewID,
-    auth_id: str = Depends(get_auth_id),
+    auth_id: Annotated[str, Depends(get_auth_id)],
 ):
     """
     Helper to post a vote on a single Review on a Prof.
@@ -142,8 +153,8 @@ async def course_reviews_votes_post(
         {"email": email},
         {
             "$set" if post_body.vote else "$unset": {
-                f"reviews.{review_hash}.votes.{auth_id}": post_body.vote
-            }
+                f"reviews.{review_hash}.votes.{auth_id}": post_body.vote,
+            },
         },
     )
 
@@ -158,5 +169,5 @@ async def student_hash(user: Student):
 
     # first generate a sha512 hash of user data and then base64 encode it
     return base64.b64encode(
-        hashlib.sha512(f"{user.name}-{user.email}-{user.rollno}".encode()).digest()
+        hashlib.sha512(f"{user.name}-{user.email}-{user.rollno}".encode()).digest(),
     ).decode()

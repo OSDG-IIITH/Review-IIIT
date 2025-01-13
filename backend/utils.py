@@ -1,13 +1,13 @@
 import base64
+
+import httpx
+import jwt
 from cryptography.fernet import Fernet, InvalidToken
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
-import httpx
-import jwt
-from starlette.types import Scope, Receive, Send
+from starlette.types import Receive, Scope, Send
 
 from config import BACKEND_ADMIN_UIDS, BACKEND_JWT_SECRET
-
 
 secure_key = Fernet.generate_key()
 
@@ -24,10 +24,12 @@ def get_auth_id(request: Request) -> str:
     """
     try:
         return jwt.decode(
-            request.cookies["auth_hash"], BACKEND_JWT_SECRET, algorithms=["HS256"]
+            request.cookies["auth_hash"],
+            BACKEND_JWT_SECRET,
+            algorithms=["HS256"],
         )["_id"]
     except (KeyError, jwt.InvalidTokenError):
-        raise HTTPException(401, "Caller not authenticated")
+        raise HTTPException(401, "Caller not authenticated") from None
 
 
 def get_auth_id_admin(request: Request) -> str:

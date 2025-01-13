@@ -4,11 +4,10 @@ import cas
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
+from config import BACKEND_CAS_SERVER_URL, logger
+from models import Student
 from routes.members import student_hash
 from utils import has_auth_id, set_auth_id
-from models import Student
-
-from config import logger, BACKEND_CAS_SERVER_URL
 
 router = APIRouter()
 
@@ -56,7 +55,7 @@ async def login(request: Request):
     response = RedirectResponse(
         request.url_for("frontend", path="/")
         if student_uid
-        else cas_client.get_logout_url()
+        else cas_client.get_logout_url(),
     )
     set_auth_id(response, student_uid, request.url.is_secure)
     return response

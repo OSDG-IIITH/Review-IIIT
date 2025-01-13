@@ -1,21 +1,21 @@
-from typing import Any
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import EmailStr
+from typing import Annotated, Any
 
-from routes.routes_helpers import get_list_with_metadata
-from routes.members import prof_exists
+from fastapi import APIRouter, Depends, HTTPException
+
 from config import db
-from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
 from models import (
     Course,
+    CourseCode,
     CourseFrontend,
     Review,
     ReviewBackend,
     ReviewFrontend,
     Sem,
-    CourseCode,
     VoteAndReviewID,
 )
+from routes.members import prof_exists
+from routes.routes_helpers import get_list_with_metadata
+from utils import get_auth_id, get_auth_id_admin, hash_decrypt, hash_encrypt
 
 # The get_auth_id Dependency validates authentication of the caller
 router = APIRouter(dependencies=[Depends(get_auth_id)])
@@ -52,7 +52,8 @@ async def course_post(courses: list[Course]):
     for course in courses:
         if await course_exists(course.sem, course.code):
             raise HTTPException(
-                status_code=400, detail="Cannot re-post a course that already exists"
+                status_code=400,
+                detail="Cannot re-post a course that already exists",
             )
 
         for p in course.profs:
@@ -67,14 +68,17 @@ async def course_post(courses: list[Course]):
 
 @router.get("/reviews/{sem}/{code}")
 async def course_reviews_get(
-    sem: Sem, code: CourseCode, auth_id: str = Depends(get_auth_id)
+    sem: Sem,
+    code: CourseCode,
+    auth_id: Annotated[str, Depends(get_auth_id)],
 ):
     """
     Helper to return all reviews under a given course.
     This function returns None if the course does not exist
     """
     course_reviews: dict[str, Any] = await course_collection.find_one(
-        {"sem": sem, "code": code}, ["reviews"]
+        {"sem": sem, "code": code},
+        ["reviews"],
     )
     if not course_reviews:
         return None
@@ -99,7 +103,10 @@ async def course_reviews_get(
 
 @router.post("/reviews/{sem}/{code}")
 async def course_reviews_post(
-    sem: Sem, code: CourseCode, review: Review, auth_id: str = Depends(get_auth_id)
+    sem: Sem,
+    code: CourseCode,
+    review: Review,
+    auth_id: Annotated[str, Depends(get_auth_id)],
 ):
     """
     Helper to post a single review on a Course.
@@ -113,24 +120,27 @@ async def course_reviews_post(
                 "$set": {
                     # do merge objects to keep old votes intact
                     f"reviews.{auth_id}": {
-                        "$mergeObjects": [f"$reviews.{auth_id}", review.model_dump()]
-                    }
-                }
-            }
+                        "$mergeObjects": [f"$reviews.{auth_id}", review.model_dump()],
+                    },
+                },
+            },
         ],
     )
 
 
 @router.delete("/reviews/{sem}/{code}")
 async def course_reviews_delete(
-    sem: Sem, code: CourseCode, auth_id: str = Depends(get_auth_id)
+    sem: Sem,
+    code: CourseCode,
+    auth_id: Annotated[str, Depends(get_auth_id)],
 ):
     """
-    Helper to delete a review posted by the authenticated user on a professor.
+    Helper to delete a review posted by the authenticated user on a course.
     If the user hasn't posted a review, no action will be taken.
     """
     await course_collection.update_one(
-        {"sem": sem, "code": code}, {"$unset": {f"reviews.{auth_id}": ""}}
+        {"sem": sem, "code": code},
+        {"$unset": {f"reviews.{auth_id}": ""}},
     )
 
 
@@ -139,7 +149,7 @@ async def course_reviews_votes_post(
     sem: Sem,
     code: CourseCode,
     post_body: VoteAndReviewID,
-    auth_id: str = Depends(get_auth_id),
+    auth_id: Annotated[str, Depends(get_auth_id)],
 ):
     """
     Helper to post a vote on a single Review on a Course.
@@ -152,7 +162,7 @@ async def course_reviews_votes_post(
         {"sem": sem, "code": code},
         {
             "$set" if post_body.vote else "$unset": {
-                f"reviews.{review_hash}.votes.{auth_id}": post_body.vote
-            }
+                f"reviews.{review_hash}.votes.{auth_id}": post_body.vote,
+            },
         },
     )

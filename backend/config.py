@@ -23,7 +23,7 @@ VITE_MSG_MAX_LEN = int(os.environ["VITE_MSG_MAX_LEN"])
 VITE_DEV_PORT = int(os.environ["VITE_DEV_PORT"])
 
 mongo_client = AsyncIOMotorClient(
-    f"{BACKEND_MONGO_URI}/{BACKEND_MONGO_DATABASE}?retryWrites=true&w=majority"
+    f"{BACKEND_MONGO_URI}/{BACKEND_MONGO_DATABASE}?retryWrites=true&w=majority",
 )
 db = mongo_client[BACKEND_MONGO_DATABASE]
 

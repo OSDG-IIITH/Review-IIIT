@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
-from typing import Annotated, Literal, TypeAlias
+from datetime import UTC, datetime
+from typing import Annotated, Any, Literal, TypeAlias
 
 from pydantic import (
     AwareDatetime,
@@ -18,7 +18,8 @@ Sem: TypeAlias = Literal["S25", "M24", "S24", "M23", "S23", "M22"]
 
 # str annotated with a regex to match valid course codes
 CourseCode: TypeAlias = Annotated[
-    str, StringConstraints(pattern=r"^(C[EGLS]|MA|OC|PD|SC|HS|EC|GS)\d\.\d{3}$")
+    str,
+    StringConstraints(pattern=r"^(C[EGLS]|MA|OC|PD|SC|HS|EC|GS)\d\.\d{3}$"),
 ]
 
 # str annotated with a regex to match valid roll numbers
@@ -37,15 +38,15 @@ class Review(BaseModel):
 
     rating: Literal[1, 2, 3, 4, 5]
     content: str = Field(..., min_length=1, max_length=VITE_MSG_MAX_LEN)
-    dtime: AwareDatetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    dtime: AwareDatetime = Field(default_factory=lambda: datetime.now(UTC))
 
     # Model-level validator that runs before individual field validation
     @model_validator(mode="before")
-    def convert_naive_to_aware(cls, values):
+    def convert_naive_to_aware(cls, values: dict[str, Any]):
         if "dtime" in values:
             dtime = values["dtime"]
             if dtime and dtime.tzinfo is None:  # Check if datetime is naive
-                values["dtime"] = dtime.replace(tzinfo=timezone.utc)  # Make it aware
+                values["dtime"] = dtime.replace(tzinfo=UTC)  # Make it aware
         return values
 
 
@@ -91,11 +92,11 @@ class ReviewsMetadata(BaseModel):
 
     # Model-level validator that runs before individual field validation
     @model_validator(mode="before")
-    def convert_naive_to_aware(cls, values):
+    def convert_naive_to_aware(cls, values: dict[str, Any]):
         if "newest_dtime" in values:
             dtime = values["newest_dtime"]
             if dtime and dtime.tzinfo is None:
-                values["newest_dtime"] = dtime.replace(tzinfo=timezone.utc)
+                values["newest_dtime"] = dtime.replace(tzinfo=UTC)
         return values
 
 

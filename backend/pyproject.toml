@@ -1,12 +1,24 @@
 [tool.ruff]
-line-length = 79
-indent-width = 4
+
+target-version = "py312"
 
 [tool.ruff.lint]
-# line too long, unsorted imports, unused imports
-extend-select = ["E501", "I"]
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-docstring-code-format = true
+# select all, then ignore unneeded ones
+select = ["ALL"]
+ignore = [
+    "D",       # docs
+    "ANN201",  # missing return type
+    "ANN204",  # missing return type
+    "FBT001",  # boolean default argument
+    "FBT002",  # boolean default argument
+    "INP001",  # implicit namespace package
+    "EM101",   # exception string literal
+    "TRY003",  # long messages outside exception class
+    "TRY301",  # abstract raise to inner function
+    "BLE001",  # catch blind exception
+    "UP040",   # type keyword
+    "TD",      # TODO
+    "FIX002",  # FIXME
+    "N805",    # first argument must be named self
+]

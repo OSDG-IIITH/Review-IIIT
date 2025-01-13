@@ -1,15 +1,15 @@
 """Initalizing fastapi"""
 
-from fastapi import FastAPI, Request
+import uvicorn
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-import uvicorn
 
-from utils import ProxyFiles
 from config import HOST_PORT, HOST_PRIVATE, VITE_DEV_PORT, VITE_SUBPATH
 from routes.auth import router as auth_router
 from routes.courses import router as course_router
 from routes.members import router as members_router
+from utils import ProxyFiles
 
 app = FastAPI(title="Review-IIIT", root_path=VITE_SUBPATH)
 
@@ -21,7 +21,7 @@ FRONTEND_PATH = "../frontend/dist"
 
 
 @app.exception_handler(404)
-async def exception_404_handler(_, __):
+async def exception_404_handler(_: Request, __: HTTPException):
     """
     A generic 404 error handler. Here we just let the frontend react router code
     handle it, so redirect to it.
