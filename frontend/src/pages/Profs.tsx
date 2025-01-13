@@ -26,9 +26,8 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
     return <FullPageLoader />;
   }
 
-  if (displayProfs.length === 0 && profList.length !== 0) {
+  if (selectedProfs.length === 0 && profList.length !== 0) {
     setSelectedProfs(profList);
-    setDisplayProfs(profList);
   }
 
   // it is enough to check length to assert full equality as selectedProfs is a
@@ -81,7 +80,7 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
               size="small"
               sx={{ minWidth: '95px' }}
             >
-              {isFullSelection ? 'Clear filter' : 'Apply filter'}
+              {isFullSelection ? 'Display all' : 'Apply filter'}
             </Button>
           </span>
         </Tooltip>
@@ -92,7 +91,7 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
         sx={{ mb: 3, fontStyle: 'italic' }}
       >
         This filter allows you to select one or more professors to display
-        reviews for. To clear this filter and display all, leave this empty.
+        reviews for. Leave the field empty to display all review boxes.
       </Typography>
       <SortBox sortableData={displayProfs} setSortableData={setDisplayProfs} />
       <Typography variant="h5" color="secondary" gutterBottom>
@@ -115,7 +114,7 @@ const Profs: React.FC<{ profList: ProfType[] | undefined }> = ({
           color="text.primary"
           sx={{ fontStyle: 'italic' }}
         >
-          No reviews available.
+          Hit the display button to show reviews.
         </Typography>
       )}
     </Container>
