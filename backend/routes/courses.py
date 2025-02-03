@@ -76,7 +76,7 @@ async def course_reviews_get(
     Helper to return all reviews under a given course.
     This function returns None if the course does not exist
     """
-    course_reviews: dict[str, Any] = await course_collection.find_one(
+    course_reviews: dict[str, Any] | None = await course_collection.find_one(
         {"sem": sem, "code": code},
         ["reviews"],
     )

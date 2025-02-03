@@ -70,7 +70,7 @@ async def prof_reviews_get(
     Helper to return all reviews under a given Prof email.
     This function returns None if the prof does not exist
     """
-    prof_reviews: dict[str, Any] = await profs_collection.find_one(
+    prof_reviews: dict[str, Any] | None = await profs_collection.find_one(
         {"email": email},
         ["reviews"],
     )
