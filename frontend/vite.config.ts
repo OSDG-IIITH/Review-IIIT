@@ -1,22 +1,10 @@
-import { defineConfig, ViteDevServer } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-
-const logger = () => {
-  return {
-    name: 'log-paths',
-    configureServer(server: ViteDevServer) {
-      server.middlewares.use((req, res, next) => {
-        console.log(`[vite] ${req.method} ${req.url}`);
-        next();
-      });
-    },
-  };
-};
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: process.env.VITE_SUBPATH,
-  plugins: [react(), logger()],
+  plugins: [react()],
   server: {
     port: Number(process.env.VITE_DEV_PORT),
     strictPort: true,
