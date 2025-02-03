@@ -100,7 +100,12 @@ const Review: React.FC<{
           </Box>
           <Typography
             variant="body2"
-            sx={{ marginTop: 1, whiteSpace: 'pre-line' }}
+            sx={{
+              marginTop: 1,
+              whiteSpace: 'pre-line',
+              overflowWrap: 'break-word',
+              wordBreak: 'break-word',
+            }}
           >
             {review.content.replace(/\n{3,}/g, '\n\n')}
           </Typography>
