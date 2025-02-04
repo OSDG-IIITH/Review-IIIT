@@ -9,15 +9,14 @@ ENV=${1:-prod}
 
 case $ENV in
     "dev")
-        source .env  # load env variables into environment
-
+        # install frontend dependencies, run frontend in dev mode, in background
         cd frontend
-        bun i  # install frontend dependencies
-        bun run dev &  # run frontend in dev mode, in background
+        bun i
+        bun run --env-file=../.env dev &
 
+        # install backend dependencies, run backend in dev mode
         cd ../backend
-        uv sync # install backend dependencies
-        fastapi dev  # run backend in dev mode
+        uv run --env-file=../.env fastapi dev
         ;;
     "prod")
         docker-compose -f $REVIEWIIITH_DIR/docker-compose.yml -p reviewiiith up --build
