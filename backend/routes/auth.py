@@ -32,7 +32,6 @@ async def login(request: Request):
         return RedirectResponse(cas_client.get_login_url())
 
     user, attributes, _ = cas_client.verify_ticket(ticket)
-    logger.info(f"CAS verify ticket response: user - {user}, attributes - {attributes}")
 
     try:
         if not attributes:
@@ -48,7 +47,7 @@ async def login(request: Request):
         # generates the uid (hash) from student data
         student_uid = await student_hash(student)
     except Exception as e:
-        logger.error(f"Could not authenticate: {e}")
+        logger.error(f"Could not authenticate {user} ({attributes}): {e}")
         student_uid = None
 
     # send JWT as cookie
